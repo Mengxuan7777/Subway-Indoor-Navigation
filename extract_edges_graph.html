@@ -1,0 +1,604 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Interactive Edge Builder (graph.glb)</title>
+    <style>
+      html, body { margin:0; height:100%; overflow:hidden; background:#fff; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+      canvas { display:block; }
+
+      #panel {
+        position: fixed;
+        left: 16px;
+        top: 16px;
+        width: 360px;
+        max-height: calc(100vh - 32px);
+        overflow: auto;
+        z-index: 10;
+        background: rgba(255,255,255,0.96);
+        border: 1px solid #ddd;
+        border-radius: 14px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        padding: 12px;
+      }
+
+      .row { display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin: 8px 0; }
+      input, select, button {
+        padding: 10px 12px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        background:#fff;
+        font-size: 13px;
+      }
+      button { cursor:pointer; }
+      label { font-size:12px; color:#444; }
+
+      #status {
+        font-size: 12px;
+        color:#333;
+        background:#f7f7f7;
+        border:1px solid #eee;
+        border-radius: 10px;
+        padding: 10px;
+        white-space: pre-wrap;
+      }
+
+      #edgesList {
+        font-size: 12px;
+        border: 1px solid #eee;
+        border-radius: 10px;
+        padding: 10px;
+        background: #fafafa;
+        max-height: 240px;
+        overflow: auto;
+        white-space: pre;
+      }
+
+      .hint { font-size: 12px; color:#666; }
+      .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+      .badge { padding:2px 8px; border:1px solid #ddd; border-radius:999px; font-size:11px; background:#fff; }
+    </style>
+  </head>
+  <body>
+    <div id="panel">
+      <div class="row" style="justify-content:space-between;">
+        <div>
+          <div style="font-weight:700;">Edge Builder</div>
+          <div class="hint">Click two nodes to create an edge.</div>
+        </div>
+        <div class="badge" id="modeBadge">Pan+Zoom</div>
+      </div>
+
+      <div class="row">
+        <label>GLB:</label>
+        <input id="glbPath" value="./assets/graph.glb" />
+        <button id="loadBtn" type="button">Load</button>
+      </div>
+
+      <div class="row">
+        <label>Floor:</label>
+        <select id="floorFilter">
+          <option value="all">All</option>
+          <option value="platform">platform</option>
+          <option value="mezzanine">mezzanine</option>
+        </select>
+
+        <button id="recenterBtn" type="button">Recenter</button>
+      </div>
+
+      <div class="row">
+        <label><input id="adaChk" type="checkbox" checked /> ADA</label>
+
+        <label>Type:</label>
+        <select id="typeSel">
+          <option value="platform">platform</option>
+          <option value="platform">mezzanine</option>
+          <option value="platform">corridor</option>
+          <option value="stairs">stairs</option>
+          <option value="elevator">elevator</option>
+          <option value="gate">turnstile</option>
+        </select>
+      </div>
+
+      <div class="row">
+        <button id="undoBtn" type="button">Undo last</button>
+        <button id="clearBtn" type="button">Clear edges</button>
+        <button id="exportBtn" type="button">Export edges.json</button>
+      </div>
+
+      <div id="status">Status: not loaded</div>
+
+      <div class="row">
+        <div class="hint">
+          Selected: <span class="mono" id="selA">—</span> → <span class="mono" id="selB">—</span>
+        </div>
+      </div>
+
+      <div class="row" style="margin-top:6px;">
+        <div style="font-weight:600; font-size:12px;">Edges</div>
+        <div class="hint">(undirected; duplicates prevented)</div>
+      </div>
+      <div id="edgesList" class="mono"></div>
+
+      <div class="hint" style="margin-top:10px;">
+        Tip: Use mouse wheel to zoom, drag to pan. Click nodes to connect.
+      </div>
+    </div>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.173.0/build/three.module.js",
+          "three/addons/": "https://unpkg.com/three@0.173.0/examples/jsm/"
+        }
+      }
+    </script>
+
+    <script type="module">
+      import * as THREE from "three";
+      import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+      import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+
+      // ---------- DOM ----------
+      const glbPathEl = document.getElementById("glbPath");
+      const loadBtn = document.getElementById("loadBtn");
+      const floorFilterEl = document.getElementById("floorFilter");
+      const recenterBtn = document.getElementById("recenterBtn");
+      const adaChk = document.getElementById("adaChk");
+      const typeSel = document.getElementById("typeSel");
+      const undoBtn = document.getElementById("undoBtn");
+      const clearBtn = document.getElementById("clearBtn");
+      const exportBtn = document.getElementById("exportBtn");
+      const statusEl = document.getElementById("status");
+      const edgesListEl = document.getElementById("edgesList");
+      const selAEl = document.getElementById("selA");
+      const selBEl = document.getElementById("selB");
+
+      function setStatus(s) { statusEl.textContent = s; }
+
+      // ---------- THREE ----------
+      const scene = new THREE.Scene();
+      scene.background = new THREE.Color(0xffffff);
+
+      const renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setPixelRatio(window.devicePixelRatio || 1);
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      document.body.appendChild(renderer.domElement);
+
+    // ---------- Perspective camera (inspect nodes clearly) ----------
+        const cam = new THREE.PerspectiveCamera(
+        45,                                // FOV
+        window.innerWidth / window.innerHeight,
+        0.1,
+        5000
+        );
+
+        // Slightly tilted, good inspection angle
+        cam.position.set(0, 160, 140);
+        cam.lookAt(0, 0, 0);
+
+        // ---------- Orbit controls (rotate + pan + zoom) ----------
+        const controls = new OrbitControls(cam, renderer.domElement);
+        controls.enableRotate = true;
+        controls.enablePan = true;
+        controls.enableZoom = true;
+
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.08;
+
+        // Limits to prevent flipping upside-down
+        controls.minPolarAngle = 0.15;
+        controls.maxPolarAngle = Math.PI * 0.48;
+
+        // Zoom limits
+        controls.minDistance = 40;
+        controls.maxDistance = 500;
+
+      controls.screenSpacePanning = true;
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.08;
+      controls.minZoom = 0.3;
+      controls.maxZoom = 8.0;
+
+      // Light (not critical, markers are basic materials)
+      scene.add(new THREE.AmbientLight(0xffffff, 1.0));
+
+      // ---------- DATA ----------
+      let gltfRoot = null;
+
+      // extracted nodes: id -> { pos: THREE.Vector3, floor: "platform"/"mezzanine"/null }
+      const nodes = {};
+
+      // clickable marker meshes: id -> mesh
+      const markers = {};
+
+      // edges data
+      // store as array of {from,to,ada,type}
+      const edges = [];
+      // to prevent duplicates: key = "A|B" with A < B
+      const edgeKeySet = {};
+
+      // selection
+      let selectedA = null; // node id
+      let selectedB = null; // node id
+
+      // visuals
+      const markerGeom = new THREE.SphereGeometry(0.8, 14, 14);
+      const matNormal = new THREE.MeshBasicMaterial({ color: 0x111111 });
+      const matSelectedA = new THREE.MeshBasicMaterial({ color: 0xff3b30 });
+      const matSelectedB = new THREE.MeshBasicMaterial({ color: 0x007aff });
+
+      // Lines for edges preview (in the builder)
+      const edgeLineGroup = new THREE.Group();
+      scene.add(edgeLineGroup);
+
+      // ---------- Helpers ----------
+      function normalizeNodeId(name) {
+        const s = (name || "").trim().toLowerCase();
+        if (s.indexOf("node_") === 0) return s.substring(5).toUpperCase();
+        return s.toUpperCase();
+      }
+
+      function getFloorKeyFromAncestors(obj) {
+        let cur = obj.parent;
+        while (cur) {
+          const n = (cur.name || "").toLowerCase();
+          if (n.indexOf("graph_") === 0) return n.substring(6);
+          cur = cur.parent;
+        }
+        return null;
+      }
+
+      function clearSceneMarkers() {
+        // remove marker meshes
+        const ids = Object.keys(markers);
+        for (let i = 0; i < ids.length; i++) {
+          scene.remove(markers[ids[i]]);
+          delete markers[ids[i]];
+        }
+
+        // clear line group
+        while (edgeLineGroup.children.length > 0) {
+          edgeLineGroup.remove(edgeLineGroup.children[0]);
+        }
+      }
+
+      function resetSelections() {
+        selectedA = null;
+        selectedB = null;
+        selAEl.textContent = "—";
+        selBEl.textContent = "—";
+
+        // restore marker colors
+        const ids = Object.keys(markers);
+        for (let i = 0; i < ids.length; i++) {
+          markers[ids[i]].material = matNormal;
+        }
+      }
+
+      function sortedKey(a, b) {
+        const A = String(a);
+        const B = String(b);
+        return (A < B) ? (A + "|" + B) : (B + "|" + A);
+      }
+
+      function addEdge(a, b, ada, type) {
+        if (!a || !b) return;
+        if (a === b) return;
+
+        const key = sortedKey(a, b);
+        if (edgeKeySet[key]) {
+          setStatus("Edge already exists: " + key);
+          return;
+        }
+
+        edgeKeySet[key] = true;
+        edges.push({ from: a, to: b, ada: !!ada, type: String(type || "platform") });
+
+        drawEdges();
+        renderEdgesList();
+        setStatus("Added edge: " + a + " <-> " + b);
+      }
+
+      function removeLastEdge() {
+        if (edges.length === 0) return;
+        const e = edges.pop();
+        const key = sortedKey(e.from, e.to);
+        delete edgeKeySet[key];
+
+        drawEdges();
+        renderEdgesList();
+        setStatus("Undo: removed " + e.from + " <-> " + e.to);
+      }
+
+      function clearEdges() {
+        edges.length = 0;
+        const keys = Object.keys(edgeKeySet);
+        for (let i = 0; i < keys.length; i++) delete edgeKeySet[keys[i]];
+
+        drawEdges();
+        renderEdgesList();
+        setStatus("Cleared all edges.");
+      }
+
+      function downloadJSON(filename, obj) {
+        const text = JSON.stringify(obj, null, 2);
+        const blob = new Blob([text], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      }
+
+      function renderEdgesList() {
+        if (edges.length === 0) {
+          edgesListEl.textContent = "(no edges yet)";
+          return;
+        }
+        const lines = [];
+        for (let i = 0; i < edges.length; i++) {
+          const e = edges[i];
+          lines.push(
+            (i + 1) + ". " + e.from + " <-> " + e.to +
+            "   ada=" + (e.ada ? "true" : "false") +
+            "   type=" + e.type
+          );
+        }
+        edgesListEl.textContent = lines.join("\n");
+      }
+
+      function drawEdges() {
+        // clear old lines
+        while (edgeLineGroup.children.length > 0) {
+          edgeLineGroup.remove(edgeLineGroup.children[0]);
+        }
+
+        // draw new
+        for (let i = 0; i < edges.length; i++) {
+          const e = edges[i];
+          const a = nodes[e.from];
+          const b = nodes[e.to];
+          if (!a || !b) continue;
+
+          const pts = [a.pos, b.pos];
+          const geom = new THREE.BufferGeometry().setFromPoints(pts);
+
+          const mat = new THREE.LineBasicMaterial({ color: e.ada ? 0x00b7ff : 0xff9500 });
+          const line = new THREE.Line(geom, mat);
+
+          // draw above everything
+          line.renderOrder = 1000;
+          edgeLineGroup.add(line);
+        }
+      }
+
+      function applyFloorFilter() {
+        const f = floorFilterEl.value;
+        const ids = Object.keys(markers);
+        for (let i = 0; i < ids.length; i++) {
+          const id = ids[i];
+          const info = nodes[id];
+          if (!info) continue;
+
+          if (f === "all") markers[id].visible = true;
+          else markers[id].visible = (info.floor === f);
+        }
+      }
+
+      function recenterToAllNodes() {
+        const ids = Object.keys(nodes);
+        if (ids.length === 0) return;
+
+        const box = new THREE.Box3();
+        for (let i = 0; i < ids.length; i++) {
+            box.expandByPoint(nodes[ids[i]].pos);
+        }
+
+        const center = new THREE.Vector3();
+        const size = new THREE.Vector3();
+        box.getCenter(center);
+        box.getSize(size);
+
+        const maxDim = Math.max(size.x, size.y, size.z);
+        const dist = maxDim * 1.6 + 40;
+
+        cam.position.set(
+            center.x + dist * 0.3,
+            center.y + dist * 0.9,
+            center.z + dist * 0.3
+        );
+
+        controls.target.copy(center);
+        cam.lookAt(center);
+        controls.update();
+        }
+
+
+      // ---------- Loading + node marker creation ----------
+      async function loadGraph(url) {
+        setStatus("Loading " + url + " ...");
+        clearSceneMarkers();
+        resetSelections();
+        clearEdges(); // optional: keep edges across loads? set to keep if you want
+
+        // clear nodes object
+        const nodeKeys = Object.keys(nodes);
+        for (let i = 0; i < nodeKeys.length; i++) delete nodes[nodeKeys[i]];
+
+        const loader = new GLTFLoader();
+        const gltf = await new Promise((resolve, reject) => {
+          loader.load(url, resolve, undefined, reject);
+        });
+
+        gltfRoot = gltf.scene;
+        gltfRoot.updateMatrixWorld(true);
+
+        // extract nodes
+        let count = 0;
+        gltfRoot.traverse((obj) => {
+          const name = obj.name || "";
+          const lower = name.toLowerCase();
+          if (lower.indexOf("node_") !== 0) return;
+
+          const id = normalizeNodeId(name);
+          const p = new THREE.Vector3();
+          obj.getWorldPosition(p);
+
+          nodes[id] = { pos: p, floor: getFloorKeyFromAncestors(obj) };
+          count++;
+        });
+
+        // create marker meshes
+        const ids = Object.keys(nodes);
+        for (let i = 0; i < ids.length; i++) {
+          const id = ids[i];
+          const m = new THREE.Mesh(markerGeom, matNormal);
+          m.position.copy(nodes[id].pos);
+          m.userData = { nodeId: id };
+          markers[id] = m;
+          scene.add(m);
+        }
+
+        // floor counts
+        const counts = {};
+        for (let i = 0; i < ids.length; i++) {
+          const fl = nodes[ids[i]].floor || "unknown";
+          counts[fl] = (counts[fl] || 0) + 1;
+        }
+
+        applyFloorFilter();
+        recenterToAllNodes();
+
+        setStatus(
+          "Loaded: " + count + " node(s)\n" +
+          "Floor counts: " + JSON.stringify(counts) + "\n" +
+          "Now click two nodes to create an edge."
+        );
+
+        renderEdgesList();
+      }
+
+      // ---------- Picking ----------
+      const raycaster = new THREE.Raycaster();
+      const mouse = new THREE.Vector2();
+
+      function isClickOnUI(ev) {
+        const t = ev.target;
+        if (!t) return false;
+        // panel is UI
+        if (t.closest && t.closest("#panel")) return true;
+        return false;
+      }
+
+      function onPointerDown(ev) {
+        if (isClickOnUI(ev)) return;
+
+        if (!gltfRoot) return;
+
+        mouse.x = (ev.clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -(ev.clientY / window.innerHeight) * 2 + 1;
+
+        raycaster.setFromCamera(mouse, cam);
+
+        // intersect marker meshes only
+        const ids = Object.keys(markers);
+        const objs = [];
+        for (let i = 0; i < ids.length; i++) {
+          if (markers[ids[i]].visible) objs.push(markers[ids[i]]);
+        }
+
+        const hits = raycaster.intersectObjects(objs, false);
+        if (hits.length === 0) return;
+
+        const hit = hits[0].object;
+        const id = hit.userData && hit.userData.nodeId ? hit.userData.nodeId : null;
+        if (!id) return;
+
+        // selection logic: A then B then create edge
+        if (!selectedA) {
+          selectedA = id;
+          selAEl.textContent = selectedA;
+          hit.material = matSelectedA;
+          setStatus("Selected A: " + selectedA + ". Now select B.");
+          return;
+        }
+
+        if (!selectedB) {
+          selectedB = id;
+          selBEl.textContent = selectedB;
+          hit.material = matSelectedB;
+
+          // create edge
+          addEdge(selectedA, selectedB, adaChk.checked, typeSel.value);
+
+          // reset selection for next edge
+          resetSelections();
+          return;
+        }
+      }
+
+      window.addEventListener("pointerdown", onPointerDown);
+
+      // ---------- UI events ----------
+      loadBtn.addEventListener("click", () => {
+        const url = (glbPathEl.value || "").trim();
+        if (!url) { setStatus("Please input a GLB path."); return; }
+        loadGraph(url).catch((e) => {
+          console.error(e);
+          setStatus("❌ Load error: " + (e && e.message ? e.message : e));
+        });
+      });
+
+      floorFilterEl.addEventListener("change", () => {
+        applyFloorFilter();
+        resetSelections();
+      });
+
+      recenterBtn.addEventListener("click", () => {
+        recenterToAllNodes();
+      });
+
+      undoBtn.addEventListener("click", () => {
+        removeLastEdge();
+      });
+
+      clearBtn.addEventListener("click", () => {
+        clearEdges();
+      });
+
+      exportBtn.addEventListener("click", () => {
+        // export only edges array
+        downloadJSON("edges.json", edges);
+        setStatus("Exported edges.json (" + edges.length + " edges).");
+      });
+
+      // ---------- render loop ----------
+      function animate() {
+        requestAnimationFrame(animate);
+        controls.update();
+        renderer.render(scene, cam);
+      }
+      animate();
+
+      window.addEventListener("resize", () => {
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+        renderer.setSize(w, h);
+        cam.aspect = w / h;
+        cam.updateProjectionMatrix();
+      });
+
+
+      // auto-load once (optional)
+      loadGraph(glbPathEl.value).catch((e) => {
+        console.error(e);
+        setStatus("❌ Auto-load failed. Click Load.");
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,398 @@
+[
+  {
+    "from": "UP1",
+    "to": "UP2",
+    "ada": true,
+    "type": "platform"
+  },
+  {
+    "from": "UP2",
+    "to": "UP3",
+    "ada": true,
+    "type": "platform"
+  },
+  {
+    "from": "UP3",
+    "to": "UP4",
+    "ada": true,
+    "type": "platform"
+  },
+  {
+    "from": "UP4",
+    "to": "UP5",
+    "ada": true,
+    "type": "platform"
+  },
+  {
+    "from": "UP5",
+    "to": "US1",
+    "ada": true,
+    "type": "platform"
+  },
+  {
+    "from": "US1",
+    "to": "UP6",
+    "ada": true,
+    "type": "platform"
+  },
+  {
+    "from": "UP6",
+    "to": "EL1",
+    "ada": true,
+    "type": "platform"
+  },
+  {
+    "from": "EL1",
+    "to": "UP7",
+    "ada": true,
+    "type": "platform"
+  },
+  {
+    "from": "UP7",
+    "to": "US2",
+    "ada": true,
+    "type": "platform"
+  },
+  {
+    "from": "US2",
+    "to": "UP8",
+    "ada": true,
+    "type": "platform"
+  },
+  {
+    "from": "UP8",
+    "to": "UP9",
+    "ada": true,
+    "type": "platform"
+  },
+  {
+    "from": "UP9",
+    "to": "UP10",
+    "ada": true,
+    "type": "platform"
+  },
+  {
+    "from": "UP10",
+    "to": "UP11",
+    "ada": true,
+    "type": "platform"
+  },
+  {
+    "from": "UP11",
+    "to": "UP12",
+    "ada": true,
+    "type": "platform"
+  },
+  {
+    "from": "UP12",
+    "to": "UP13",
+    "ada": true,
+    "type": "platform"
+  },
+  {
+    "from": "UP13",
+    "to": "US3",
+    "ada": true,
+    "type": "platform"
+  },
+  {
+    "from": "US3",
+    "to": "US4",
+    "ada": true,
+    "type": "platform"
+  },
+  {
+    "from": "DP1",
+    "to": "DP2",
+    "ada": true,
+    "type": "platform"
+  },
+  {
+    "from": "DP2",
+    "to": "DP3",
+    "ada": true,
+    "type": "platform"
+  },
+  {
+    "from": "DP3",
+    "to": "DP4",
+    "ada": true,
+    "type": "platform"
+  },
+  {
+    "from": "DP4",
+    "to": "DP5",
+    "ada": true,
+    "type": "platform"
+  },
+  {
+    "from": "DP5",
+    "to": "DP6",
+    "ada": true,
+    "type": "platform"
+  },
+  {
+    "from": "DP6",
+    "to": "DS1",
+    "ada": true,
+    "type": "platform"
+  },
+  {
+    "from": "DS1",
+    "to": "DP7",
+    "ada": true,
+    "type": "platform"
+  },
+  {
+    "from": "DP7",
+    "to": "EL2",
+    "ada": true,
+    "type": "platform"
+  },
+  {
+    "from": "EL2",
+    "to": "DP9",
+    "ada": true,
+    "type": "platform"
+  },
+  {
+    "from": "DP9",
+    "to": "DS2",
+    "ada": true,
+    "type": "platform"
+  },
+  {
+    "from": "DS2",
+    "to": "DP10",
+    "ada": true,
+    "type": "platform"
+  },
+  {
+    "from": "DP10",
+    "to": "DP11",
+    "ada": true,
+    "type": "platform"
+  },
+  {
+    "from": "DP11",
+    "to": "DP12",
+    "ada": true,
+    "type": "platform"
+  },
+  {
+    "from": "DP12",
+    "to": "DP13",
+    "ada": true,
+    "type": "platform"
+  },
+  {
+    "from": "DP13",
+    "to": "DP14",
+    "ada": true,
+    "type": "platform"
+  },
+  {
+    "from": "DP14",
+    "to": "DP15",
+    "ada": true,
+    "type": "platform"
+  },
+  {
+    "from": "DP15",
+    "to": "DS3",
+    "ada": true,
+    "type": "platform"
+  },
+  {
+    "from": "DS3",
+    "to": "DP16",
+    "ada": true,
+    "type": "platform"
+  },
+  {
+    "from": "DP16",
+    "to": "DP17",
+    "ada": true,
+    "type": "platform"
+  },
+  {
+    "from": "EL2",
+    "to": "ELM2",
+    "ada": true,
+    "type": "elevator"
+  },
+  {
+    "from": "EL1",
+    "to": "ELM1",
+    "ada": true,
+    "type": "elevator"
+  },
+  {
+    "from": "DS1",
+    "to": "DSM1",
+    "ada": false,
+    "type": "stairs"
+  },
+  {
+    "from": "US1",
+    "to": "USM1",
+    "ada": false,
+    "type": "stairs"
+  },
+  {
+    "from": "DS2",
+    "to": "DSM2",
+    "ada": false,
+    "type": "stairs"
+  },
+  {
+    "from": "US2",
+    "to": "UPM2",
+    "ada": false,
+    "type": "stairs"
+  },
+  {
+    "from": "DS3",
+    "to": "DSM3",
+    "ada": false,
+    "type": "stairs"
+  },
+  {
+    "from": "US3",
+    "to": "USM3",
+    "ada": false,
+    "type": "stairs"
+  },
+  {
+    "from": "EX1",
+    "to": "NM1",
+    "ada": true,
+    "type": "platform"
+  },
+  {
+    "from": "EX2",
+    "to": "NM2",
+    "ada": true,
+    "type": "platform"
+  },
+  {
+    "from": "NM1",
+    "to": "NT",
+    "ada": true,
+    "type": "gate"
+  },
+  {
+    "from": "NM2",
+    "to": "NT",
+    "ada": true,
+    "type": "gate"
+  },
+  {
+    "from": "NM1",
+    "to": "EX3",
+    "ada": true,
+    "type": "platform"
+  },
+  {
+    "from": "NM2",
+    "to": "EX4",
+    "ada": true,
+    "type": "platform"
+  },
+  {
+    "from": "NT",
+    "to": "USM1",
+    "ada": true,
+    "type": "platform"
+  },
+  {
+    "from": "NT",
+    "to": "DSM1",
+    "ada": true,
+    "type": "platform"
+  },
+  {
+    "from": "NT",
+    "to": "NM4",
+    "ada": true,
+    "type": "platform"
+  },
+  {
+    "from": "NM4",
+    "to": "ELM1",
+    "ada": true,
+    "type": "platform"
+  },
+  {
+    "from": "NM4",
+    "to": "ELM2",
+    "ada": true,
+    "type": "platform"
+  },
+  {
+    "from": "NM4",
+    "to": "UPM2",
+    "ada": true,
+    "type": "platform"
+  },
+  {
+    "from": "NM4",
+    "to": "DSM2",
+    "ada": true,
+    "type": "platform"
+  },
+  {
+    "from": "DSM2",
+    "to": "UPM2",
+    "ada": true,
+    "type": "platform"
+  },
+  {
+    "from": "DSM1",
+    "to": "NM4",
+    "ada": true,
+    "type": "platform"
+  },
+  {
+    "from": "NM4",
+    "to": "USM1",
+    "ada": true,
+    "type": "platform"
+  },
+  {
+    "from": "USM3",
+    "to": "SM1",
+    "ada": true,
+    "type": "platform"
+  },
+  {
+    "from": "DSM3",
+    "to": "SM1",
+    "ada": true,
+    "type": "platform"
+  },
+  {
+    "from": "USM4",
+    "to": "ST",
+    "ada": true,
+    "type": "platform"
+  },
+  {
+    "from": "SM1",
+    "to": "ST",
+    "ada": true,
+    "type": "platform"
+  },
+  {
+    "from": "ST",
+    "to": "EX5",
+    "ada": true,
+    "type": "gate"
+  },
+  {
+    "from": "ST",
+    "to": "EX6",
+    "ada": true,
+    "type": "gate"
+  }
+]

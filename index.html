@@ -1,0 +1,201 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Subway Floor Plan Viewer</title>
+
+    <style>
+      html, body { margin: 0; height: 100%; overflow: hidden; background: #000000; }
+      canvas { display: block; }
+
+      #ui {
+        position: fixed;
+        top: 16px;
+        left: 16px;
+        z-index: 10;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      }
+
+      button, select {
+        padding: 10px 12px;
+        background: rgba(255,255,255,0.95);
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 14px;
+      }
+
+      #status {
+        position: fixed;
+        left: 16px;
+        bottom: 16px;
+        z-index: 10;
+        padding: 10px 12px;
+        background: rgba(255,255,255,0.95);
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+        font-size: 12px;
+        max-width: 60vw;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      /* =========================
+         Chat Panel
+      ========================= */
+      #chatPanel{
+        position:fixed;
+        right:16px;
+        top:16px;
+        width:360px;
+        height:560px;
+        background:rgba(255,255,255,0.96);
+        border:1px solid #ddd;
+        border-radius:14px;
+        display:flex;
+        flex-direction:column;
+        z-index:20;
+        overflow:hidden;
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      }
+
+      #chatHeader{
+        padding:12px 14px;
+        border-bottom:1px solid #eee;
+        font-weight:600;
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap: 10px;
+      }
+
+      #chatLog{
+        flex:1;
+        padding:12px;
+        overflow:auto;
+        display:flex;
+        flex-direction:column;
+        gap:8px;
+      }
+
+      .msg{
+        max-width:88%;
+        padding:10px 12px;
+        border-radius:12px;
+        font-size:13px;
+        line-height:1.35;
+        white-space:pre-wrap;
+      }
+
+      .user{ align-self:flex-end; background:#111; color:#fff; }
+      .bot{ align-self:flex-start; background:#f2f2f2; color:#111; }
+
+      #chatControls{
+        border-top:1px solid #eee;
+        padding:10px;
+        display:flex;
+        flex-direction:column;
+        gap:8px;
+      }
+
+      .row{ display:flex; gap:8px; }
+
+      #chatControls input{
+        flex:1;
+        padding:10px 10px;
+        border:1px solid #ddd;
+        border-radius:10px;
+        font-size:13px;
+        outline:none;
+      }
+
+      #sendBtn{
+        padding:10px 12px;
+        border:1px solid #ddd;
+        border-radius:10px;
+        background:#fff;
+        cursor:pointer;
+        font-size:13px;
+      }
+
+      .chip{
+        padding:8px 10px;
+        border:1px solid #ddd;
+        border-radius:999px;
+        background:#fff;
+        cursor:pointer;
+        font-size:12px;
+        white-space:nowrap;
+      }
+
+      .hint{
+        font-size:11px;
+        color:#666;
+        padding: 0 2px;
+        white-space: nowrap;
+      }
+
+      /* Mobile fallback */
+      @media (max-width: 900px) {
+        #chatPanel{
+          right:10px;
+          top:auto;
+          bottom:10px;
+          width: calc(100vw - 20px);
+          height: 44vh;
+        }
+        #status { max-width: calc(100vw - 32px); }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="ui">
+      <button id="modeToggle">Switch to Graph Mode</button>
+      <select id="floorSelect"></select>
+      <button id="viewToggle">Top View</button>
+      <button id="recenterBtn">Recenter</button>
+    </div>
+
+
+    <div id="status">Loading…</div>
+
+    <!-- Chat UI -->
+    <div id="chatPanel">
+      <div id="chatHeader">
+        <span>NaviMind</span>
+        <span class="hint">Examples: NM, DS1, EX1</span>
+      </div>
+
+      <div id="chatLog" aria-live="polite"></div>
+
+      <div id="chatControls">
+        <div class="row">
+          <input id="locInput" placeholder="Current node (e.g., NM)" autocomplete="off" />
+          <input id="destInput" placeholder="Destination (exit node e.g., EX1)" autocomplete="off" />
+        </div>
+
+        <div class="row">
+          <button class="chip" data-crit="shortest" type="button">Shortest</button>
+          <button class="chip" data-crit="least_crowds" type="button">Least crowds</button>
+          <button class="chip" data-crit="ada" type="button">ADA</button>
+        </div>
+
+        <div class="row">
+          <input id="chatInput" placeholder='Or type: "From NM to EX1 least crowds"' autocomplete="off" />
+          <button id="sendBtn" type="button">Send</button>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="./main.js"></script>
+    <script type="importmap"> { "imports": { "three": "https://unpkg.com/three@0.173.0/build/three.module.js", "three/addons/": "https://unpkg.com/three@0.173.0/examples/jsm/" } } </script>
+  </body>
+</html>

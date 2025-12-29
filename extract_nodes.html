@@ -1,0 +1,181 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Extract Nodes from graph.glb</title>
+    <style>
+      body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; padding: 16px; }
+      button { padding: 10px 12px; border: 1px solid #ddd; border-radius: 10px; background: #fff; cursor: pointer; }
+      #log { margin-top: 12px; white-space: pre-wrap; background: #f7f7f7; border: 1px solid #eee; border-radius: 10px; padding: 12px; }
+      input { width: 460px; max-width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 10px; }
+      .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+      code { background:#eee; padding:2px 6px; border-radius:6px; }
+    </style>
+  </head>
+  <body>
+    <h2>Node Extractor: <code>graph.glb</code> → <code>nodes.json</code></h2>
+
+    <div class="row">
+      <label>GLB path:</label>
+      <input id="path" value="./assets/graph.glb" />
+      <button id="runBtn">Extract</button>
+      <button id="dlBtn" disabled>Export nodes.json</button>
+    </div>
+
+    <div id="log">Ready.</div>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.173.0/build/three.module.js",
+          "three/addons/": "https://unpkg.com/three@0.173.0/examples/jsm/"
+        }
+      }
+    </script>
+
+    <script type="module">
+      import * as THREE from "three";
+      import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+
+      const logEl = document.getElementById("log");
+      const pathEl = document.getElementById("path");
+      const runBtn = document.getElementById("runBtn");
+      const dlBtn  = document.getElementById("dlBtn");
+
+      let lastJSON = null;
+
+      function log(msg) {
+        logEl.textContent = String(msg);
+        console.log(msg);
+      }
+
+      function downloadText(filename, text) {
+        const blob = new Blob([text], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      }
+
+      function normalizeNodeId(objName) {
+        // "node_usm1" -> "USM1"
+        const s = (objName || "").trim();
+        if (s.toLowerCase().startsWith("node_")) {
+          return s.substring("node_".length).toUpperCase();
+        }
+        return s.toUpperCase();
+      }
+
+      function getFloorKeyFromAncestors(obj) {
+        // Walk up and find parent named "graph_mezzanine" / "graph_platform"
+        let cur = obj.parent;
+        while (cur) {
+          const n = (cur.name || "").toLowerCase();
+          if (n.startsWith("graph_")) return n.substring("graph_".length);
+          cur = cur.parent;
+        }
+        return null;
+      }
+
+      function extractNodes(root) {
+        // Ensure world matrices are correct
+        root.updateMatrixWorld(true);
+
+        const nodes = {}; // id -> { pos:[x,y,z], floor:"mezzanine"/"platform"/null }
+
+        root.traverse((obj) => {
+          const name = obj.name || "";
+          const lower = name.toLowerCase();
+          if (!lower.startsWith("node_")) return;
+
+          const id = normalizeNodeId(name);
+
+          const p = new THREE.Vector3();
+          obj.getWorldPosition(p);
+
+          // If duplicates exist, we keep the first and warn
+          if (nodes[id]) {
+            console.warn("Duplicate node id found:", id, obj);
+            return;
+          }
+
+          nodes[id] = {
+            pos: [p.x, p.y, p.z],
+            floor: getFloorKeyFromAncestors(obj)
+          };
+        });
+
+        return nodes;
+      }
+
+      async function run() {
+        const url = pathEl.value.trim();
+        if (!url) { log("Please provide a GLB path."); return; }
+
+        log("Loading: " + url);
+
+        const loader = new GLTFLoader();
+        const gltf = await new Promise((resolve, reject) => {
+          loader.load(url, resolve, undefined, reject);
+        });
+
+        const root = gltf.scene;
+        const nodes = extractNodes(root);
+
+        const ids = Object.keys(nodes).sort();
+        if (ids.length === 0) {
+          lastJSON = null;
+          dlBtn.disabled = true;
+          log(
+            "No nodes found.\n" +
+            "Make sure empties/objects are named like node_usm1, node_ex1, etc.\n" +
+            "And they are exported into graph.glb."
+          );
+          return;
+        }
+
+        lastJSON = JSON.stringify(nodes, null, 2);
+        dlBtn.disabled = false;
+
+        // summary
+        const counts = {};
+        for (let i = 0; i < ids.length; i++) {
+          const f = nodes[ids[i]].floor || "unknown";
+          counts[f] = (counts[f] || 0) + 1;
+        }
+
+        const preview = ids.slice(0, Math.min(12, ids.length)).map((id) => {
+          const v = nodes[id];
+          const p = v.pos.map((x) => x.toFixed(3)).join(", ");
+          return id + "  floor=" + (v.floor || "null") + "  pos=" + p;
+        }).join("\n");
+
+        log(
+          "✅ Extracted " + ids.length + " node(s).\n\n" +
+          "Floor counts: " + JSON.stringify(counts) + "\n\n" +
+          "Preview:\n" + preview + "\n\n" +
+          "Click “Export nodes.json” to download."
+        );
+
+        console.log("nodes:", nodes);
+      }
+
+      runBtn.addEventListener("click", () => {
+        run().catch((e) => {
+          console.error(e);
+          log("❌ Error: " + (e && e.message ? e.message : e));
+        });
+      });
+
+      dlBtn.addEventListener("click", () => {
+        if (!lastJSON) return;
+        downloadText("nodes.json", lastJSON);
+      });
+    </script>
+  </body>
+</html>
