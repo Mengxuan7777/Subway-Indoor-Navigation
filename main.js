@@ -1,23 +1,21 @@
 // main.js
-// Wires together: viewer (Three.js), planner (routing), chat UI.
-// Adds "All" option in floor dropdown to show all levels.
+// Wires together: viewer (Three.js), planner (routing via backend), chat UI.
+// Polls backend state to color edges.
+// Uses LLM to extract constraints + weights, then calls backend A* via /api/route.
 
 import { StationViewer } from "./viewer.js";
 import { RoutePlanner } from "./planner.js";
 import { ChatController } from "./chat.js";
-import { CrowdSimulator } from "./crowd_sim.js";
-
+import { callLLM } from "./llmClient.js";
 
 /* =========================
    DOM
 ========================= */
 const statusEl = document.getElementById("status");
-const modeBtn  = document.getElementById("modeToggle");
+const modeBtn = document.getElementById("modeToggle");
 const floorSel = document.getElementById("floorSelect");
 const recenterBtn = document.getElementById("recenterBtn");
-
-// Optional: if you added a view toggle button in HTML
-const viewBtn = document.getElementById("viewToggle"); // can be null if not in HTML
+const viewBtn = document.getElementById("viewToggle"); // optional
 
 function setStatus(s) {
   if (statusEl) statusEl.textContent = s;
@@ -27,8 +25,18 @@ function setStatus(s) {
    Config
 ========================= */
 const STATION_URL = "./assets/station.glb";
-const NODES_URL   = "./data/nodes.json";
-const EDGES_URL   = "./data/edges.json";
+const NODES_URL = "./data/nodes.json";
+const EDGES_URL = "./data/edges.json";
+
+// Backend for A* + /api/state
+const BACKEND_BASE_URL = "http://127.0.0.1:5000";
+
+// Local LLM router (Gemini/DeepSeek/OpenAI)
+const LLM_BASE_URL = "http://127.0.0.1:8000";
+const LLM_PROVIDER = "openai"; // "openai" | "gemini" | "deepseek"
+const LLM_MODEL = "gpt-5.2"; // e.g. "chatgpt-4", "gemini-pro", "deepseek-advanced"
+
+const STATE_POLL_MS = 3000;
 
 /* =========================
    Instances
@@ -40,7 +48,7 @@ const viewer = new StationViewer({
   floorPrefix: "floor_"
 });
 
-const planner = new RoutePlanner();
+const planner = new RoutePlanner({ backendBaseUrl: BACKEND_BASE_URL });
 const chat = new ChatController();
 
 /* =========================
@@ -53,6 +61,8 @@ async function loadJSON(url) {
 }
 
 function rebuildFloorDropdown() {
+  if (!floorSel) return;
+
   floorSel.innerHTML = "";
 
   // "All" option
@@ -76,6 +86,7 @@ function rebuildFloorDropdown() {
 }
 
 function syncFloorDropdown() {
+  if (!floorSel) return;
   floorSel.value = viewer.showAllLevels ? "all" : String(viewer.activeFloorIndex);
 }
 
@@ -138,14 +149,69 @@ function bindUI() {
 }
 
 /* =========================
-   Chat -> Plan -> Visualize
+   LLM → constraints/weights
+========================= */
+function buildLLMPrompt(start, goal, userSentence) {
+  // We want output that matches app.py /api/route directly.
+  return (
+    "You convert a navigation request into routing parameters.\n" +
+    "StartNode: " + start + "\n" +
+    "EndNode: " + goal + "\n" +
+    "UserRequest: " + userSentence + "\n\n" +
+    "Return ONLY JSON with EXACT schema:\n" +
+    "{\n" +
+    '  "constraints": {"avoidStairs": boolean, "requireElevator": boolean, "avoidHazards": boolean},\n' +
+    '  "weights": {"time": number, "distance": number, "crowd": number, "risk": number}\n' +
+    "}\n\n" +
+    "Rules:\n" +
+    "- All weights must be >= 0.\n" +
+    "- If wheelchair/accessible/no stairs is mentioned: avoidStairs=true and requireElevator=true.\n" +
+    "- If emergency/smoke/fire/hazard is mentioned: avoidHazards=true and risk should be the highest weight.\n" +
+    "- If user says avoid crowds/least crowded: crowd should be the highest weight.\n" +
+    "- Otherwise: time should be the highest weight.\n"
+  );
+}
+
+function defaultRoutingParams() {
+  return {
+    constraints: { avoidStairs: false, requireElevator: false, avoidHazards: false },
+    weights: { time: 1.0, distance: 0.1, crowd: 0.2, risk: 0.2 }
+  };
+}
+
+function sanitizeParams(obj) {
+  // Defensive parsing: ensure required objects exist and numbers are valid
+  const out = defaultRoutingParams();
+
+  if (obj && obj.constraints && typeof obj.constraints === "object") {
+    out.constraints.avoidStairs = !!obj.constraints.avoidStairs;
+    out.constraints.requireElevator = !!obj.constraints.requireElevator;
+    out.constraints.avoidHazards = !!obj.constraints.avoidHazards;
+  }
+
+  function numOr0(x) {
+    if (typeof x !== "number") return 0.0;
+    if (x < 0) return 0.0;
+    return x;
+  }
+
+  if (obj && obj.weights && typeof obj.weights === "object") {
+    out.weights.time = numOr0(obj.weights.time);
+    out.weights.distance = numOr0(obj.weights.distance);
+    out.weights.crowd = numOr0(obj.weights.crowd);
+    out.weights.risk = numOr0(obj.weights.risk);
+  }
+
+  return out;
+}
+
+/* =========================
+   Chat → LLM → Route → Visualize
 ========================= */
 function bindChat() {
-  // ChatController is expected to call this callback with:
-  // { start, goal, criteria, ada }
-  chat.onRequest((req) => {
+  chat.onRequest(async (req) => {
     const start = (req.start || "").trim().toUpperCase();
-    const goal  = (req.goal || "").trim().toUpperCase();
+    const goal = (req.goal || "").trim().toUpperCase();
 
     if (!planner.nodeExists(start)) {
       chat.addMsg("Unknown start node: " + start, "bot");
@@ -156,23 +222,57 @@ function bindChat() {
       return;
     }
 
-    const result = planner.planRoute({
-      start,
-      goal,
-      criteria: req.criteria || "shortest",
-      ada: !!req.ada
-    });
+    // Use actual free text if available; fallback to a synthetic sentence
+    var userSentence = (req.freeText || "").trim();
+    if (!userSentence) {
+      userSentence =
+        "Route from " + start +
+        " to " + goal +
+        " with criteria " + (req.criteria || "shortest") + ".";
+    }
 
-    if (!result.path) {
-      chat.addMsg("No route found. " + (result.reason || ""), "bot");
+    chat.addMsg("Understanding request (LLM)…", "bot");
+
+    // Defaults if LLM fails
+    var routing = defaultRoutingParams();
+
+    try {
+      var system = "Return ONLY JSON. No markdown. No extra text.";
+      var prompt = buildLLMPrompt(start, goal, userSentence);
+
+      var llmText = await callLLM(LLM_BASE_URL, LLM_PROVIDER, LLM_MODEL, prompt, system);
+      chat.addMsg("LLM output: " + llmText, "bot");
+
+      var parsed = JSON.parse(llmText); // throws if invalid
+      routing = sanitizeParams(parsed);
+    } catch (e) {
+      console.error(e);
+      chat.addMsg("LLM failed: " + (e && e.message ? e.message : String(e)), "bot");
+    }
+
+    chat.addMsg("Planning route…", "bot");
+
+    let result;
+    try {
+      result = await planner.planRoute({
+        startNode: start,
+        endNode: goal,
+        constraints: routing.constraints,
+        weights: routing.weights
+      });
+    } catch (e) {
+      console.error(e);
+      chat.addMsg("Route request failed: " + (e && e.message ? e.message : e), "bot");
       return;
     }
 
-    // Show route in graph mode, optionally switch floor (unless user selected All)
-    viewer.highlightRoute(result.path, {
-      floorKey: (viewer.showAllLevels ? null : result.floorKey)
-    });
+    if (!result || !result.path) {
+      chat.addMsg("No route found. " + (result && result.reason ? result.reason : ""), "bot");
+      return;
+    }
 
+    // Visualize the route
+    viewer.highlightRoute(result.path, { floorKey: (viewer.showAllLevels ? null : result.floorKey) });
     updateModeButtonText();
     syncFloorDropdown();
 
@@ -183,13 +283,126 @@ function bindChat() {
 }
 
 /* =========================
+   State polling for visualization
+========================= */
+function normalizeNodeId(s) {
+  return (s || "").trim().toUpperCase();
+}
+
+function viewerEdgeKey(a, b) {
+  a = normalizeNodeId(a);
+  b = normalizeNodeId(b);
+  return (a < b) ? (a + "|" + b) : (b + "|" + a);
+}
+
+function backendEdgeId(a, b) {
+  a = normalizeNodeId(a);
+  b = normalizeNodeId(b);
+  return a + "__" + b;
+}
+
+function buildCrowdByEdgeFromState(edgesArray, stateEdges) {
+  var crowdByEdgeKey = {};
+
+  for (var i = 0; i < edgesArray.length; i++) {
+    var e = edgesArray[i];
+    var a = normalizeNodeId(e.from);
+    var b = normalizeNodeId(e.to);
+
+    var id1 = backendEdgeId(a, b);
+    var id2 = backendEdgeId(b, a);
+
+    var st = stateEdges[id1];
+    if (!st) st = stateEdges[id2];
+
+    var crowd = 0.0;
+    if (st && typeof st.crowdLevel === "number") crowd = st.crowdLevel;
+
+    if (crowd < 0) crowd = 0;
+    if (crowd > 1) crowd = 1;
+
+    var k = viewerEdgeKey(a, b);
+    crowdByEdgeKey[k] = crowd;
+  }
+
+  return crowdByEdgeKey;
+}
+
+function buildEdgeStateByViewerKey(edgesArray, stateEdges) {
+  var out = {};
+
+  for (var i = 0; i < edgesArray.length; i++) {
+    var e = edgesArray[i];
+    var a = normalizeNodeId(e.from);
+    var b = normalizeNodeId(e.to);
+
+    var id1 = backendEdgeId(a, b);
+    var id2 = backendEdgeId(b, a);
+
+    var st = stateEdges[id1];
+    if (!st) st = stateEdges[id2];
+
+    var k = viewerEdgeKey(a, b);
+    out[k] = st || null;
+  }
+
+  return out;
+}
+
+async function fetchBackendState() {
+  var res = await fetch(BACKEND_BASE_URL + "/api/state", { cache: "no-store" });
+  if (!res.ok) throw new Error("Failed /api/state: HTTP " + res.status);
+  return await res.json();
+}
+
+function startStatePolling(edgesArray) {
+  var stopped = false;
+  var inFlight = false;
+  var lastVersion = null;
+
+  async function tick() {
+    if (stopped) return;
+    if (inFlight) return;
+    inFlight = true;
+
+    try {
+      var state = await fetchBackendState();
+
+      var gv = state && state.graphVersion;
+      var changed = (gv !== lastVersion);
+      if (changed) lastVersion = gv;
+      if (!changed) return;
+
+      var stateEdges = (state && state.edges) ? state.edges : {};
+
+      var crowdByEdgeKey = buildCrowdByEdgeFromState(edgesArray, stateEdges);
+      viewer.setCrowdColors(crowdByEdgeKey);
+
+      var edgeStateByKey = buildEdgeStateByViewerKey(edgesArray, stateEdges);
+      viewer.applyEdgeState(edgeStateByKey);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      inFlight = false;
+    }
+  }
+
+  tick();
+  var handle = setInterval(tick, STATE_POLL_MS);
+
+  return function stop() {
+    stopped = true;
+    clearInterval(handle);
+  };
+}
+
+/* =========================
    Init + Render loop
 ========================= */
 async function init() {
   setStatus("Loading station…");
   await viewer.loadStation();
 
-  // Build dropdown once floors exist
   rebuildFloorDropdown();
   bindUI();
 
@@ -200,26 +413,9 @@ async function init() {
   planner.setGraphData(nodes, edges);
   viewer.buildGraphFromData(nodes, edges);
 
-  // --- Simulate crowd and color edges every minute ---
-  const crowdSim = new CrowdSimulator({
-    updateMs: 3000,     // 1 minute (use 3000 while testing)
-    smoothing: 0.18,     // smoother transitions
-    globalBase: 0.50,    // overall baseline
-    enableRush: true
-  });
+  startStatePolling(edges);
 
-  crowdSim.setEdges(edges);
-
-  // initial apply + continuous updates
-  crowdSim.start((crowdByEdge, now) => {
-    viewer.setCrowdColors(crowdByEdge);  // your viewer.js colors edges green->red
-
-    // optional status line
-    // setStatus(`Crowd updated ${now.toLocaleTimeString()} (sim)`);
-  });
-
-
-  setStatus(`Ready. Nodes: ${Object.keys(nodes).length} | Edges: ${edges.length}`);
+  setStatus("Ready. Nodes: " + Object.keys(nodes).length + " | Edges: " + edges.length);
 
   bindChat();
   animate();

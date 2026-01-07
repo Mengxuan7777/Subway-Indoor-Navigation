@@ -81,7 +81,8 @@ export class ChatController {
         start,
         goal,
         criteria: this.criteria,
-        ada: (this.criteria === "ada")
+        ada: (this.criteria === "ada"),
+        freeText: free 
       };
       this._emitRequest(req);
     });

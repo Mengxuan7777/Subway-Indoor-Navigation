@@ -1,144 +1,80 @@
-// planner.js
+// planner.js (API client version)
+// Calls Flask backend /api/route for routing (A* server-side)
+
 export class RoutePlanner {
-  constructor() {
-    this.nodes = {};     // id -> { pos:[x,y,z], floor:"platform"/"mezzanine"/... }
-    this.edges = [];     // {from,to,ada,type,dist,crowd}
-    this.adj = {};       // id -> [{to, edge}]
+  constructor({ backendBaseUrl }) {
+    this.backendBaseUrl = backendBaseUrl || "http://127.0.0.1:5000";
+    this.nodes = {};
+    this.edges = [];
+    this.nodeSet = {};
   }
 
   setGraphData(nodes, edges) {
     this.nodes = nodes || {};
-    this.edges = (edges || []).map((e) => this._normalizeEdge(e));
-
-    // compute dist if missing
-    for (let i = 0; i < this.edges.length; i++) {
-      const ed = this.edges[i];
-      if (ed.dist === null) ed.dist = this._computeDist(ed.from, ed.to);
-      if (ed.crowd === null) ed.crowd = 0; // default crowd (0..1)
-    }
-
-    this.adj = this._buildAdj(this.edges);
+    this.edges = edges || [];
+    this.nodeSet = {};
+    var keys = Object.keys(this.nodes);
+    for (var i = 0; i < keys.length; i++) this.nodeSet[keys[i].toUpperCase()] = true;
   }
 
   nodeExists(id) {
-    return Object.prototype.hasOwnProperty.call(this.nodes, id);
+    id = (id || "").trim().toUpperCase();
+    return this.nodeSet[id] === true;
   }
 
-  _normalizeNodeId(s) {
-    return (s || "").trim().toUpperCase();
-  }
+  async planRoute(params) {
+    // params can be either your old style:
+    // { start, goal, criteria, ada }
+    // OR the new style:
+    // { startNode, endNode, constraints, weights }
 
-  _normalizeEdge(e) {
-    const from = this._normalizeNodeId(e.from);
-    const to = this._normalizeNodeId(e.to);
+    var start = (params.start || params.startNode || "").trim().toUpperCase();
+    var end = (params.goal || params.endNode || "").trim().toUpperCase();
 
-    return {
-      from,
-      to,
-      ada: e.ada === true,
-      type: (e.type || "corridor"),
-      dist: (typeof e.dist === "number") ? e.dist : null,
-      crowd: (typeof e.crowd === "number") ? e.crowd : null
+    // Back-compat mapping
+    var constraints = params.constraints || {};
+    var weights = params.weights || {};
+
+    // If old style is used, map it:
+    if (!params.constraints) {
+      var ada = !!params.ada;
+      if (ada) {
+        constraints.avoidStairs = true;
+        constraints.requireElevator = true;
+      }
+      // criteria mapping
+      if (params.criteria === "least_crowds") {
+        weights = { crowd: 1.0, time: 0.4, risk: 0.2, distance: 0.1 };
+      } else {
+        weights = { time: 1.0, crowd: 0.2, risk: 0.2, distance: 0.1 };
+      }
+    }
+
+    var body = {
+      startNode: start,
+      endNode: end,
+      constraints: constraints,
+      weights: weights
     };
-  }
 
-  _computeDist(a, b) {
-    const na = this.nodes[a];
-    const nb = this.nodes[b];
-    if (!na || !nb || !na.pos || !nb.pos) return 1;
+    var r = await fetch(this.backendBaseUrl + "/api/route", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body)
+    });
 
-    const dx = na.pos[0] - nb.pos[0];
-    const dy = na.pos[1] - nb.pos[1];
-    const dz = na.pos[2] - nb.pos[2];
-    return Math.sqrt(dx * dx + dy * dy + dz * dz);
-  }
-
-  _buildAdj(edges) {
-    const adj = {};
-    for (let i = 0; i < edges.length; i++) {
-      const e = edges[i];
-
-      if (!adj[e.from]) adj[e.from] = [];
-      if (!adj[e.to]) adj[e.to] = [];
-
-      // ✅ undirected / bidirectional
-      adj[e.from].push({ to: e.to, edge: e });
-      adj[e.to].push({ to: e.from, edge: e });
-    }
-    return adj;
-  }
-
-  _edgeWeight(e, criteria) {
-    if (criteria === "least_crowds") {
-      const alpha = 3.0; // how strongly crowd affects cost
-      const crowd = (e.crowd === undefined ? 0 : e.crowd);
-      return e.dist * (1.0 + alpha * crowd);
-    }
-    return e.dist; // shortest
-  }
-
-  planRoute({ start, goal, criteria = "shortest", ada = false }) {
-    start = this._normalizeNodeId(start);
-    goal = this._normalizeNodeId(goal);
-
-    if (!this.nodeExists(start) || !this.nodeExists(goal)) {
-      return { path: null, reason: "Unknown start/goal node." };
+    var data = await r.json();
+    if (!r.ok) {
+      return { path: null, reason: data && data.error ? data.error : ("HTTP " + r.status) };
     }
 
-    // Dijkstra
-    const dist = {};
-    const prev = {};
-    const visited = {};
-    const pq = [];
-
-    dist[start] = 0;
-    pq.push({ node: start, d: 0 });
-
-    while (pq.length > 0) {
-      // extract min
-      let best = 0;
-      for (let i = 1; i < pq.length; i++) {
-        if (pq[i].d < pq[best].d) best = i;
-      }
-      const cur = pq.splice(best, 1)[0];
-      const u = cur.node;
-      if (visited[u]) continue;
-      visited[u] = true;
-      if (u === goal) break;
-
-      const neigh = this.adj[u] || [];
-      for (let i = 0; i < neigh.length; i++) {
-        const v = neigh[i].to;
-        const e = neigh[i].edge;
-
-        if (ada && e.ada !== true) continue;
-
-        const w = this._edgeWeight(e, criteria);
-        const nd = dist[u] + w;
-
-        if (dist[v] === undefined || nd < dist[v]) {
-          dist[v] = nd;
-          prev[v] = u;
-          pq.push({ node: v, d: nd });
-        }
-      }
-    }
-
-    if (dist[goal] === undefined) {
-      return { path: null, reason: "No path under current constraints." };
-    }
-
-    // reconstruct path
-    const path = [];
-    let cur = goal;
-    while (cur !== undefined) {
-      path.push(cur);
-      if (cur === start) break;
-      cur = prev[cur];
-    }
-    path.reverse();
-
-    const floorKey = (this.nodes[start] && this.nodes[start].floor) ? this.nodes[start].floor : null;
-    return { path, cost: dist[goal], floorKey };
+    // Normalize to your previous frontend expectations
+    return {
+      path: data.pathNodes || null,
+      cost: data.totalCost,
+      floorKey: null,
+      graphVersion: data.graphVersion,
+      pathEdges: data.pathEdges || []
+    };
   }
 }

@@ -46,6 +46,7 @@ export class StationViewer {
     this.edgeLineByKey = {};           // "A|B" -> THREE.Line
     this.nodeMeshById = {};            // "NM" -> THREE.Mesh
     this.nodeLabelById = {};           // "NM" -> THREE.Sprite
+    this.edgeGlowByKey = {}; 
 
     // ✅ Fix: store original state PER MATERIAL to avoid shared-material ghost persistence
     this._origMatByMaterial = new WeakMap();
@@ -118,6 +119,16 @@ export class StationViewer {
     this.COLOR_EDGE_ROUTE = 0x00b7ff;
     this.COLOR_NODE_BASE = 0x111111;
     this.COLOR_NODE_ROUTE = 0x00b7ff;
+    
+    this.COLOR_EDGE_BLOCKED = 0x222222;
+    this.COLOR_EDGE_CONSTRUCTION = 0xff9900;
+    this.COLOR_HAZARD_GLOW = 0xff0000;
+    this.GLOW_WIDTH_EXTRA = 6;     // glow line is wider than base
+    this.GLOW_MAX_OPACITY = 0.65;  // max glow strength
+
+    this.DASH_SIZE = 1.5;
+    this.GAP_SIZE  = 1.0;
+
 
     /* =========================
        STATION GHOST (graph mode only)
@@ -137,6 +148,25 @@ export class StationViewer {
     this.LABEL_FONT = "12px system-ui, -apple-system, Segoe UI, Roboto, Arial";
     this.LABEL_Y_OFFSET = 3;
     this.LABEL_SCALE = 3;
+    // Keep label padding consistent across create + update redraw
+    this.LABEL_PAD_X = 2;
+    this.LABEL_PAD_Y = 2;
+    this.LABEL_RADIUS = 6;    
+    // Label highlight style for route
+    this.LABEL_BG_ROUTE = "rgba(0,255,255,0.95)";   // cyan bg
+    this.LABEL_TEXT_ROUTE = "#003333";              // darker text
+    this.LABEL_BORDER_ROUTE = "rgba(0,120,120,1)";
+
+    // Route highlight style
+    this.ROUTE_COLOR = 0x00ffff;          // cyan
+    this.EDGE_WIDTH_BASE = 3;             // px
+    this.EDGE_WIDTH_ROUTE = 5;           // px
+    this.NODE_SCALE_BASE = 1.0;
+    this.NODE_SCALE_ROUTE = 1.35;
+
+    // Track current route so crowd updates don't overwrite it
+    this.routeEdgeKeys = new Set(); // Set<string>
+    this.routeNodeIds  = new Set(); // Set<string>
 
     window.addEventListener("resize", () => this.onResize());
 
@@ -267,7 +297,7 @@ export class StationViewer {
       
       const mat = new LineMaterial({
         color: this.COLOR_EDGE_BASE,
-        linewidth: 3,          // ✅ WIDTH IN PIXELS
+        linewidth: this.EDGE_WIDTH_BASE,          // ✅ WIDTH IN PIXELS
         transparent: true,
         depthTest: false
       });
@@ -279,8 +309,33 @@ export class StationViewer {
       line.computeLineDistances();
       line.renderOrder = 1900;
 
+      line.userData = { from: a, to: b, ada: !!e.ada, type: e.type || "corridor" };
+
       this.edgeLineByKey[this._edgeKey(a, b)] = line;
       group.add(line);
+
+      // --- Hazard glow overlay line (initially hidden) ---
+      const glowMat = new LineMaterial({
+        color: this.COLOR_HAZARD_GLOW,
+        linewidth: this.EDGE_WIDTH_BASE + this.GLOW_WIDTH_EXTRA,
+        transparent: true,
+        opacity: 0.0,
+        depthTest: false,
+        blending: THREE.AdditiveBlending
+      });
+      glowMat.resolution.set(window.innerWidth, window.innerHeight);
+
+      const glowLine = new Line2(geom, glowMat);
+      glowLine.computeLineDistances();
+      glowLine.renderOrder = 1850; // behind base line but above station ghost
+      glowLine.visible = false;
+
+      glowLine.userData = line.userData; // same metadata
+
+      const key = this._edgeKey(a, b);
+      this.edgeGlowByKey[key] = glowLine;
+      group.add(glowLine);
+
     }
 
     this.graphBuilt = true;
@@ -329,17 +384,40 @@ export class StationViewer {
   }
 
   clearRoute() {
+    // clear sets
+    this.routeEdgeKeys.clear();
+    this.routeNodeIds.clear();
+
+    // reset edges
     const ekeys = Object.keys(this.edgeLineByKey);
     for (let i = 0; i < ekeys.length; i++) {
       const line = this.edgeLineByKey[ekeys[i]];
-      if (line && line.material && line.material.color) line.material.color.setHex(this.COLOR_EDGE_BASE);
+      if (!line || !line.material) continue;
+
+      if (line.material.color) line.material.color.setHex(this.COLOR_EDGE_BASE);
+      line.material.linewidth = this.EDGE_WIDTH_BASE;
     }
 
+    // reset nodes
     const nkeys = Object.keys(this.nodeMeshById);
     for (let i = 0; i < nkeys.length; i++) {
       const m = this.nodeMeshById[nkeys[i]];
-      if (m && m.material && m.material.color) m.material.color.setHex(this.COLOR_NODE_BASE);
+      if (!m || !m.material) continue;
+
+      if (m.material.color) m.material.color.setHex(this.COLOR_NODE_BASE);
+      m.scale.set(this.NODE_SCALE_BASE, this.NODE_SCALE_BASE, this.NODE_SCALE_BASE);
     }
+
+    // reset labels
+    for (let i = 0; i < nkeys.length; i++) {
+      const id = nkeys[i];
+      const label = this.nodeLabelById[id];
+      if (!label || !label.userData || !label.userData.baseStyle) continue;
+
+      const s = label.userData.baseStyle;
+      this._updateLabelStyle(label, s.bg, s.text, s.border);
+    }
+
   }
 
   highlightRoute(pathNodes, options = {}) {
@@ -352,36 +430,157 @@ export class StationViewer {
       this.setActiveFloorByKey(options.floorKey);
     }
 
+    // reset previous route highlight (but keep crowd colors to be re-applied by next tick)
+    // If you want to keep current crowd colors immediately, don't reset all edges here.
+    // We'll reset only nodes + route edges we touched.
     this.clearRoute();
 
+    // nodes cyan + bigger + label highlight
     for (let i = 0; i < pathNodes.length; i++) {
       const id = String(pathNodes[i]).toUpperCase();
+
       const mesh = this.nodeMeshById[id];
-      if (mesh && mesh.material && mesh.material.color) mesh.material.color.setHex(this.COLOR_NODE_ROUTE);
+      if (mesh && mesh.material) {
+        mesh.material.color.setHex(this.ROUTE_COLOR);
+        mesh.scale.set(this.NODE_SCALE_ROUTE, this.NODE_SCALE_ROUTE, this.NODE_SCALE_ROUTE);
+      }
+
+      const label = this.nodeLabelById[id];
+      if (label) {
+        this._updateLabelStyle(
+          label,
+          this.LABEL_BG_ROUTE,
+          this.LABEL_TEXT_ROUTE,
+          this.LABEL_BORDER_ROUTE
+        );
+      }
+
+      this.routeNodeIds.add(id);
     }
 
+
+    // edges cyan + thicker, and LOCK them
     for (let i = 0; i < pathNodes.length - 1; i++) {
       const a = String(pathNodes[i]).toUpperCase();
       const b = String(pathNodes[i + 1]).toUpperCase();
-      const line = this.edgeLineByKey[this._edgeKey(a, b)];
-      if (line && line.material && line.material.color) line.material.color.setHex(this.COLOR_EDGE_ROUTE);
+
+      const k = this._edgeKey(a, b);
+      const line = this.edgeLineByKey[k];
+      if (!line || !line.material) continue;
+
+      if (line.material.color) line.material.color.setHex(this.ROUTE_COLOR);
+      line.material.linewidth = this.EDGE_WIDTH_ROUTE;
+
+      this.routeEdgeKeys.add(k);
     }
   }
 
-  setCrowdColors(crowdByEdgeKey) {
-    if (!crowdByEdgeKey) return;
+  /**
+   * crowdByEdgeKey: { "A|B": 0..1 }
+   * Route edges are "locked" cyan and won't be overwritten.
+   */
+  setCrowdColors(crowdByEdgeKey, options = {}) {
+    const min = (typeof options.min === "number") ? options.min : 0;
+    const max = (typeof options.max === "number") ? options.max : 1;
+    const missingColor = (options.missingColor != null) ? options.missingColor : this.COLOR_EDGE_BASE;
+
     const keys = Object.keys(this.edgeLineByKey);
     for (let i = 0; i < keys.length; i++) {
       const k = keys[i];
       const line = this.edgeLineByKey[k];
-      const c = crowdByEdgeKey[k];
-      if (!line || typeof c !== "number" || !line.material || !line.material.color) continue;
+      if (!line || !line.material || !line.material.color) continue;
 
-      const t = this._clamp(c, 0, 1);
-      const col = new THREE.Color().setHSL((1 - t) * 0.33, 1.0, 0.5);
+      // ✅ Do NOT overwrite highlighted route edges
+      if (this.routeEdgeKeys.has(k)) continue;
+
+      const raw = crowdByEdgeKey ? crowdByEdgeKey[k] : undefined;
+      if (typeof raw !== "number" || isNaN(raw)) {
+        line.material.color.setHex(missingColor);
+        line.material.linewidth = this.EDGE_WIDTH_BASE;
+        continue;
+      }
+
+      const t = this._clamp((raw - min) / (max - min || 1), 0, 1);
+      // green (0.33) -> orange (~0.08)
+      const hueGreen = 0.33;
+      const hueOrange = 0.08;
+      const hue = hueGreen + (hueOrange - hueGreen) * t;
+      const col = new THREE.Color().setHSL(hue, 1.0, 0.5);
+
       line.material.color.copy(col);
+      line.material.linewidth = this.EDGE_WIDTH_BASE;
     }
   }
+
+/**
+ * edgeStateByKey: { "A|B": { status, speedFactor, hazardLevel } | null }
+ *
+ * Rules:
+ * - Crowd controls base color (green->orange) via setCrowdColors()
+ * - Construction: dashed line only (no color change)
+ * - Hazard/Emergency: red glow overlay, and overrides crowd appearance (base turns red)
+ * - Route edges remain cyan; hazard may glow on top of route (recommended)
+ */
+applyEdgeState(edgeStateByKey) {
+  const keys = Object.keys(this.edgeLineByKey);
+
+  for (let i = 0; i < keys.length; i++) {
+    const k = keys[i];
+
+    const line = this.edgeLineByKey[k];
+    if (!line || !line.material || !line.material.color) continue;
+
+    const glow = this.edgeGlowByKey[k];
+    const st = edgeStateByKey ? edgeStateByKey[k] : null;
+
+    // ---- Defaults each tick (important!) ----
+    // Construction default: not dashed
+    line.material.dashed = false;
+
+    // Hazard default: off
+    if (glow) {
+      glow.visible = false;
+      if (glow.material) glow.material.opacity = 0.0;
+    }
+
+    // If no state, keep whatever crowd already set
+    if (!st) continue;
+
+    // --- Construction (speedFactor > 1): dashed line, no color change ---
+    const sf = (typeof st.speedFactor === "number") ? st.speedFactor : 1.0;
+    if (sf > 1.001) {
+      line.material.dashed = true;
+      line.material.dashSize = this.DASH_SIZE;
+      line.material.gapSize = this.GAP_SIZE;
+    }
+
+    // --- Hazard glow overlay (0..1) ---
+    const hz = (typeof st.hazardLevel === "number") ? st.hazardLevel : 0.0;
+    const hazard = this._clamp(hz, 0, 1);
+
+    if (hazard > 0.001) {
+      // If it's a route edge: keep cyan base, but allow red glow overlay
+      if (this.routeEdgeKeys.has(k)) {
+        if (glow && glow.material) {
+          glow.visible = true;
+          glow.material.opacity = Math.min(this.GLOW_MAX_OPACITY, hazard * this.GLOW_MAX_OPACITY);
+        }
+        continue;
+      }
+
+      // Non-route edge: hazard overrides crowd => base line becomes red
+      line.material.color.setHex(this.COLOR_HAZARD_GLOW);
+      line.material.linewidth = this.EDGE_WIDTH_BASE;
+
+      if (glow && glow.material) {
+        glow.visible = true;
+        glow.material.opacity = Math.min(this.GLOW_MAX_OPACITY, hazard * this.GLOW_MAX_OPACITY);
+        glow.material.linewidth = this.EDGE_WIDTH_BASE + this.GLOW_WIDTH_EXTRA;
+      }
+    }
+  }
+}
+
 
   render() {
     this.controls.update();
@@ -398,6 +597,24 @@ export class StationViewer {
     this.perspCam.updateProjectionMatrix();
 
     this._updateOrthoFrustum(this.ORTHO_HALF_H);
+
+    // Update line material resolution for thick lines (base + glow)
+    const ekeys = Object.keys(this.edgeLineByKey);
+    for (let i = 0; i < ekeys.length; i++) {
+      const line = this.edgeLineByKey[ekeys[i]];
+      if (line && line.material && line.material.resolution) {
+        line.material.resolution.set(w, h);
+      }
+    }
+
+    const gkeys = Object.keys(this.edgeGlowByKey);
+    for (let i = 0; i < gkeys.length; i++) {
+      const glow = this.edgeGlowByKey[gkeys[i]];
+      if (glow && glow.material && glow.material.resolution) {
+        glow.material.resolution.set(w, h);
+      }
+    }
+
   }
 
   /* =========================================================
@@ -576,15 +793,12 @@ export class StationViewer {
 
     ctx.font = this.LABEL_FONT;
 
-    // Rectangle size control:
-    // - paddingX/paddingY -> rectangle margin
-    // - font size -> baseline text size
-    const paddingX = 2;
-    const paddingY = 2;
+    const paddingX = this.LABEL_PAD_X;
+    const paddingY = this.LABEL_PAD_Y;
 
     const metrics = ctx.measureText(text);
     const textW = Math.ceil(metrics.width);
-    const textH = 14;
+    const textH = 14; // ok for 12px font
 
     const w = textW + paddingX * 2;
     const h = textH + paddingY * 2;
@@ -598,7 +812,8 @@ export class StationViewer {
     ctx.strokeStyle = this.LABEL_BORDER_COLOR;
     ctx.lineWidth = 1;
 
-    const r = 6;
+    const r = this.LABEL_RADIUS;
+
     ctx.beginPath();
     ctx.moveTo(r, 0);
     ctx.lineTo(w - r, 0);
@@ -629,6 +844,17 @@ export class StationViewer {
     });
 
     const sprite = new THREE.Sprite(mat);
+
+    // Save base styles + text for later redraw
+    sprite.userData = {
+      baseStyle: {
+        bg: this.LABEL_BG_COLOR,
+        text: this.LABEL_TEXT_COLOR,
+        border: this.LABEL_BORDER_COLOR
+      },
+      text
+    };
+
     sprite.renderOrder = 3000;
 
     // World size scaling
@@ -643,6 +869,46 @@ export class StationViewer {
       const s = this.nodeLabelById[ids[i]];
       if (s) s.visible = !!visible;
     }
+  }
+
+  _updateLabelStyle(sprite, bg, text, border) {
+    if (!sprite || !sprite.material || !sprite.material.map) return;
+
+    const canvas = sprite.material.map.image; // ✅ removed stray token
+    const ctx = canvas.getContext("2d");
+
+    const paddingX = this.LABEL_PAD_X;
+    const r = this.LABEL_RADIUS;
+
+    const textStr = sprite.userData && sprite.userData.text ? sprite.userData.text : "";
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // background
+    ctx.fillStyle = bg;
+    ctx.strokeStyle = border;
+    ctx.lineWidth = 1;
+
+    ctx.beginPath();
+    ctx.moveTo(r, 0);
+    ctx.lineTo(canvas.width - r, 0);
+    ctx.quadraticCurveTo(canvas.width, 0, canvas.width, r);
+    ctx.lineTo(canvas.width, canvas.height - r);
+    ctx.quadraticCurveTo(canvas.width, canvas.height, canvas.width - r, canvas.height);
+    ctx.lineTo(r, canvas.height);
+    ctx.quadraticCurveTo(0, canvas.height, 0, canvas.height - r);
+    ctx.lineTo(0, r);
+    ctx.quadraticCurveTo(0, 0, r, 0);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // text
+    ctx.font = this.LABEL_FONT;
+    ctx.fillStyle = text;
+    ctx.textBaseline = "middle";
+    ctx.fillText(textStr, paddingX, canvas.height / 2);
+
+    sprite.material.map.needsUpdate = true;
   }
 
   /* =========================================================
@@ -759,6 +1025,7 @@ export class StationViewer {
     this.nodeMeshById = {};
     this.nodeLabelById = {};
     this.graphBuilt = false;
+    this.edgeGlowByKey = {};
   }
 
   _loadGLTF(url) {
