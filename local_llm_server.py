@@ -169,3 +169,75 @@ def llm(req: LLMReq):
         # This makes your frontend show the true cause instead of just "500"
         raise HTTPException(status_code=500, detail=str(e))
 
+
+class ParseReq(BaseModel):
+    start: str
+    goal: str
+    user: str
+    provider: Provider = "openai"  # default
+    model: str = "gpt-4o-mini"      # default
+
+
+@app.post("/parse")
+def parse(req: ParseReq):
+    """
+    Parse user query into routing constraints and weights using LLM.
+    Uses the same prompt structure as main.js buildLLMPrompt.
+    Returns: {"constraints": {...}, "weights": {...}}
+    """
+    import json
+    
+    # Build prompt matching main.js buildLLMPrompt
+    user_input = (
+        "You convert a navigation request into routing parameters.\\n"
+        f"StartNode: {req.start}\\n"
+        f"EndNode: {req.goal}\\n"
+        f"UserRequest: {req.user}\\n\\n"
+        "Return ONLY JSON with EXACT schema:\\n"
+        "{\\n"
+        '  "category": "ADA|TIME|DISTANCE|EMERGENCY",  // one of these labels\\n'
+        '  "constraints": {"avoidStairs": boolean, "requireElevator": boolean, "avoidHazards": boolean},\\n'
+        '  "weights": {"time": number, "distance": number, "crowd": number, "risk": number}\\n'
+        "}\\n\\n"
+        "Rules:\\n"
+        "- All weights must be >= 0.\\n"
+        "- If wheelchair/accessible/no stairs is mentioned: avoidStairs=true and requireElevator=true.\\n"
+        "- If emergency/smoke/fire/hazard is mentioned: avoidHazards=true and risk should be the highest weight.\\n"
+        "- If user says avoid crowds/least crowded: crowd should be the highest weight.\\n"
+        "- If user says shortest/least walking: distance should be the highest weight.\\n"
+        "- Otherwise: hazard should be the highest weight.\\n"
+        '- Set `category` to exactly one of: "ADA", "TIME", "DISTANCE", "EMERGENCY" based on the primary user intent.\\n'
+    )
+
+    try:
+        if req.provider == "openai":
+            text, _ = call_openai(req.model, None, user_input, temperature=0.0, max_tokens=300)
+        elif req.provider == "gemini":
+            text, _ = call_gemini(req.model, None, user_input, temperature=0.0, max_tokens=300)
+        elif req.provider == "deepseek":
+            text, _ = call_deepseek(req.model, None, user_input, temperature=0.0, max_tokens=300)
+        else:
+            raise HTTPException(400, "Unknown provider")
+
+        # Parse JSON from LLM response
+        # Extract JSON if wrapped in markdown code blocks
+        text = text.strip()
+        if text.startswith("```json"):
+            text = text[7:]
+        if text.startswith("```"):
+            text = text[3:]
+        if text.endswith("```"):
+            text = text[:-3]
+        text = text.strip()
+
+        parsed = json.loads(text)
+        constraints = parsed.get("constraints", {})
+        weights = parsed.get("weights", {})
+
+        return {"constraints": constraints, "weights": weights}
+
+    except json.JSONDecodeError as e:
+        raise HTTPException(400, f"LLM returned invalid JSON: {str(e)}. Response: {text[:200]}")
+    except Exception as e:
+        raise HTTPException(500, str(e))
+

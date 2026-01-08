@@ -4,12 +4,33 @@
     "category": "ADA",
     "query": "I'm in a wheelchair—can you guide me to Exit 4 using elevators only? No stairs.",
     "snapshot": {
-      "graphVersion": 1
+      "graphVersion": 1,
+      "edgeState": {
+        "NM__ST1": {
+          "status": "open",
+          "crowdLevel": 0.3,
+          "speedFactor": 1.0
+        },
+        "NM__EL1": {
+          "status": "open",
+          "crowdLevel": 0.5,
+          "speedFactor": 1.0
+        },
+        "MZ__EL1": {
+          "status": "open",
+          "crowdLevel": 0.4,
+          "speedFactor": 1.0
+        },
+        "MZ__ST2": {
+          "status": "open",
+          "crowdLevel": 0.2,
+          "speedFactor": 1.0
+        }
+      }
     },
     "ground_truth": {
-      "startNode": "DS1",
+      "startNode": "NM",
       "endNode": "EX4",
-      "category": "ADA",
       "constraints": {
         "avoidStairs": true,
         "requireElevator": true,
@@ -31,7 +52,24 @@
     "category": "ADA",
     "query": "I can't take stairs—what's the accessible route to the uptown platform from the mezzanine?",
     "snapshot": {
-      "graphVersion": 2
+      "graphVersion": 2,
+      "edgeState": {
+        "MZ__ST1": {
+          "status": "open",
+          "crowdLevel": 0.6,
+          "speedFactor": 1.0
+        },
+        "MZ__EL2": {
+          "status": "open",
+          "crowdLevel": 0.2,
+          "speedFactor": 1.0
+        },
+        "EL2__PL_U": {
+          "status": "open",
+          "crowdLevel": 0.4,
+          "speedFactor": 1.0
+        }
+      }
     },
     "ground_truth": {
       "startNode": "MZ",
@@ -57,7 +95,24 @@
     "category": "ADA",
     "query": "I'm pushing a stroller—please avoid stairs and take me to Exit 2 via elevators.",
     "snapshot": {
-      "graphVersion": 3
+      "graphVersion": 3,
+      "edgeState": {
+        "PL_D__ST3": {
+          "status": "open",
+          "crowdLevel": 0.4,
+          "speedFactor": 1.0
+        },
+        "PL_D__EL1": {
+          "status": "open",
+          "crowdLevel": 0.5,
+          "speedFactor": 1.0
+        },
+        "EL1__MZ": {
+          "status": "open",
+          "crowdLevel": 0.7,
+          "speedFactor": 1.0
+        }
+      }
     },
     "ground_truth": {
       "startNode": "PL_D",
@@ -83,7 +138,24 @@
     "category": "ADA",
     "query": "I have heavy luggage—no stairs please. What's the accessible way to the downtown platform?",
     "snapshot": {
-      "graphVersion": 4
+      "graphVersion": 4,
+      "edgeState": {
+        "NM__ST2": {
+          "status": "open",
+          "crowdLevel": 0.2,
+          "speedFactor": 1.0
+        },
+        "NM__EL1": {
+          "status": "open",
+          "crowdLevel": 0.3,
+          "speedFactor": 1.0
+        },
+        "EL1__PL_D": {
+          "status": "open",
+          "crowdLevel": 0.4,
+          "speedFactor": 1.0
+        }
+      }
     },
     "ground_truth": {
       "startNode": "NM",
@@ -109,7 +181,24 @@
     "category": "ADA",
     "query": "Is there an elevator-only route to Exit 1? I can't do stairs at all.",
     "snapshot": {
-      "graphVersion": 5
+      "graphVersion": 5,
+      "edgeState": {
+        "MZ__EL3": {
+          "status": "open",
+          "crowdLevel": 0.2,
+          "speedFactor": 1.0
+        },
+        "EL3__EX1": {
+          "status": "open",
+          "crowdLevel": 0.6,
+          "speedFactor": 1.0
+        },
+        "MZ__ST4": {
+          "status": "open",
+          "crowdLevel": 0.1,
+          "speedFactor": 1.0
+        }
+      }
     },
     "ground_truth": {
       "startNode": "MZ",
@@ -135,7 +224,24 @@
     "category": "ADA",
     "query": "I need the most accessible path—avoid stairs and narrow corridors—to Exit 3.",
     "snapshot": {
-      "graphVersion": 6
+      "graphVersion": 6,
+      "edgeState": {
+        "NM__C_NARROW": {
+          "status": "open",
+          "crowdLevel": 0.2,
+          "speedFactor": 1.0
+        },
+        "NM__C_WIDE": {
+          "status": "open",
+          "crowdLevel": 0.5,
+          "speedFactor": 1.0
+        },
+        "C_WIDE__EL2": {
+          "status": "open",
+          "crowdLevel": 0.3,
+          "speedFactor": 1.0
+        }
+      }
     },
     "ground_truth": {
       "startNode": "NM",
@@ -161,7 +267,24 @@
     "category": "ADA",
     "query": "Please route me to the transfer corridor using elevators only—stairs aren't an option.",
     "snapshot": {
-      "graphVersion": 7
+      "graphVersion": 7,
+      "edgeState": {
+        "PL_U__ST1": {
+          "status": "open",
+          "crowdLevel": 0.6,
+          "speedFactor": 1.0
+        },
+        "PL_U__EL2": {
+          "status": "open",
+          "crowdLevel": 0.4,
+          "speedFactor": 1.0
+        },
+        "EL2__XFER": {
+          "status": "open",
+          "crowdLevel": 0.3,
+          "speedFactor": 1.0
+        }
+      }
     },
     "ground_truth": {
       "startNode": "PL_U",
@@ -187,7 +310,24 @@
     "category": "ADA",
     "query": "I’m on the downtown platform—what’s the wheelchair-accessible way to Exit 4?",
     "snapshot": {
-      "graphVersion": 8
+      "graphVersion": 8,
+      "edgeState": {
+        "PL_D__EL1": {
+          "status": "open",
+          "crowdLevel": 0.5,
+          "speedFactor": 1.0
+        },
+        "EL1__MZ": {
+          "status": "open",
+          "crowdLevel": 0.5,
+          "speedFactor": 2.0
+        },
+        "MZ__EX4": {
+          "status": "open",
+          "crowdLevel": 0.2,
+          "speedFactor": 1.0
+        }
+      }
     },
     "ground_truth": {
       "startNode": "PL_D",
@@ -213,7 +353,24 @@
     "category": "ADA",
     "query": "No stairs—can you take me from the entrance to the uptown platform via elevators?",
     "snapshot": {
-      "graphVersion": 9
+      "graphVersion": 9,
+      "edgeState": {
+        "EX2__MZ": {
+          "status": "open",
+          "crowdLevel": 0.4,
+          "speedFactor": 1.0
+        },
+        "MZ__EL2": {
+          "status": "open",
+          "crowdLevel": 0.3,
+          "speedFactor": 1.0
+        },
+        "EL2__PL_U": {
+          "status": "open",
+          "crowdLevel": 0.6,
+          "speedFactor": 1.0
+        }
+      }
     },
     "ground_truth": {
       "startNode": "EX2",
@@ -239,7 +396,24 @@
     "category": "ADA",
     "query": "I can’t climb stairs—what’s the most accessible route to Exit 1 right now?",
     "snapshot": {
-      "graphVersion": 10
+      "graphVersion": 10,
+      "edgeState": {
+        "NM__EL3": {
+          "status": "open",
+          "crowdLevel": 0.7,
+          "speedFactor": 1.0
+        },
+        "EL3__EX1": {
+          "status": "open",
+          "crowdLevel": 0.3,
+          "speedFactor": 1.0
+        },
+        "NM__ST4": {
+          "status": "open",
+          "crowdLevel": 0.1,
+          "speedFactor": 1.0
+        }
+      }
     },
     "ground_truth": {
       "startNode": "NM",
@@ -265,7 +439,24 @@
     "category": "CROWD",
     "query": "Which way to Exit 2 is least crowded right now?",
     "snapshot": {
-      "graphVersion": 11
+      "graphVersion": 11,
+      "edgeState": {
+        "NM__C1": {
+          "status": "open",
+          "crowdLevel": 0.9,
+          "speedFactor": 1.0
+        },
+        "NM__C2": {
+          "status": "open",
+          "crowdLevel": 0.2,
+          "speedFactor": 1.0
+        },
+        "C2__MZ": {
+          "status": "open",
+          "crowdLevel": 0.3,
+          "speedFactor": 1.0
+        }
+      }
     },
     "ground_truth": {
       "startNode": "NM",
@@ -291,7 +482,19 @@
     "category": "CROWD",
     "query": "Can you route me to the downtown platform using a quieter corridor, even if it's longer?",
     "snapshot": {
-      "graphVersion": 12
+      "graphVersion": 12,
+      "edgeState": {
+        "MZ__PL_D_FAST": {
+          "status": "open",
+          "crowdLevel": 0.8,
+          "speedFactor": 1.0
+        },
+        "MZ__PL_D_ALT": {
+          "status": "open",
+          "crowdLevel": 0.2,
+          "speedFactor": 1.0
+        }
+      }
     },
     "ground_truth": {
       "startNode": "MZ",
@@ -317,7 +520,24 @@
     "category": "CROWD",
     "query": "What's the least crowded way to transfer to the uptown platform from here?",
     "snapshot": {
-      "graphVersion": 13
+      "graphVersion": 13,
+      "edgeState": {
+        "PL_D__XFER_A": {
+          "status": "open",
+          "crowdLevel": 0.7,
+          "speedFactor": 1.0
+        },
+        "PL_D__XFER_B": {
+          "status": "open",
+          "crowdLevel": 0.3,
+          "speedFactor": 1.0
+        },
+        "XFER_B__PL_U": {
+          "status": "open",
+          "crowdLevel": 0.2,
+          "speedFactor": 1.0
+        }
+      }
     },
     "ground_truth": {
       "startNode": "PL_D",
@@ -343,7 +563,24 @@
     "category": "CROWD",
     "query": "Please avoid the busy area near the turnstiles—what's a quieter path to Exit 4?",
     "snapshot": {
-      "graphVersion": 14
+      "graphVersion": 14,
+      "edgeState": {
+        "NM__TURNSTILE": {
+          "status": "open",
+          "crowdLevel": 0.95,
+          "speedFactor": 1.0
+        },
+        "NM__BYPASS": {
+          "status": "open",
+          "crowdLevel": 0.25,
+          "speedFactor": 1.0
+        },
+        "BYPASS__MZ": {
+          "status": "open",
+          "crowdLevel": 0.35,
+          "speedFactor": 1.0
+        }
+      }
     },
     "ground_truth": {
       "startNode": "NM",
@@ -369,7 +606,19 @@
     "category": "CROWD",
     "query": "Is there a less crowded route to Exit 1 right now?",
     "snapshot": {
-      "graphVersion": 15
+      "graphVersion": 15,
+      "edgeState": {
+        "MZ__EX1_MAIN": {
+          "status": "open",
+          "crowdLevel": 0.85,
+          "speedFactor": 1.0
+        },
+        "MZ__EX1_ALT": {
+          "status": "open",
+          "crowdLevel": 0.2,
+          "speedFactor": 1.0
+        }
+      }
     },
     "ground_truth": {
       "startNode": "MZ",
@@ -395,7 +644,24 @@
     "category": "CROWD",
     "query": "I don't mind walking more—just get me to Exit 3 with the least crowd.",
     "snapshot": {
-      "graphVersion": 16
+      "graphVersion": 16,
+      "edgeState": {
+        "PL_U__MZ_SHORT": {
+          "status": "open",
+          "crowdLevel": 0.9,
+          "speedFactor": 1.0
+        },
+        "PL_U__MZ_LONG": {
+          "status": "open",
+          "crowdLevel": 0.2,
+          "speedFactor": 1.0
+        },
+        "MZ__EX3": {
+          "status": "open",
+          "crowdLevel": 0.3,
+          "speedFactor": 1.0
+        }
+      }
     },
     "ground_truth": {
       "startNode": "PL_U",
@@ -421,7 +687,24 @@
     "category": "CROWD",
     "query": "What's the least crowded way from the downtown platform to the mezzanine?",
     "snapshot": {
-      "graphVersion": 17
+      "graphVersion": 17,
+      "edgeState": {
+        "PL_D__ST2": {
+          "status": "open",
+          "crowdLevel": 0.8,
+          "speedFactor": 1.0
+        },
+        "PL_D__EL1": {
+          "status": "open",
+          "crowdLevel": 0.4,
+          "speedFactor": 1.0
+        },
+        "EL1__MZ": {
+          "status": "open",
+          "crowdLevel": 0.3,
+          "speedFactor": 1.0
+        }
+      }
     },
     "ground_truth": {
       "startNode": "PL_D",
@@ -447,7 +730,24 @@
     "category": "CROWD",
     "query": "Avoid the crowds near Corridor C1—what's a quieter route to Exit 2?",
     "snapshot": {
-      "graphVersion": 18
+      "graphVersion": 18,
+      "edgeState": {
+        "NM__C1": {
+          "status": "open",
+          "crowdLevel": 0.95,
+          "speedFactor": 1.0
+        },
+        "NM__C3": {
+          "status": "open",
+          "crowdLevel": 0.35,
+          "speedFactor": 1.0
+        },
+        "C3__MZ": {
+          "status": "open",
+          "crowdLevel": 0.25,
+          "speedFactor": 1.0
+        }
+      }
     },
     "ground_truth": {
       "startNode": "NM",
@@ -473,7 +773,19 @@
     "category": "CROWD",
     "query": "Can you send me to the uptown platform with minimal crowding on the way?",
     "snapshot": {
-      "graphVersion": 19
+      "graphVersion": 19,
+      "edgeState": {
+        "MZ__PL_U_A": {
+          "status": "open",
+          "crowdLevel": 0.75,
+          "speedFactor": 1.0
+        },
+        "MZ__PL_U_B": {
+          "status": "open",
+          "crowdLevel": 0.15,
+          "speedFactor": 1.0
+        }
+      }
     },
     "ground_truth": {
       "startNode": "MZ",
@@ -499,7 +811,24 @@
     "category": "CROWD",
     "query": "What's the least crowded way to Exit 4 from the entrance area?",
     "snapshot": {
-      "graphVersion": 20
+      "graphVersion": 20,
+      "edgeState": {
+        "NM__MZ_MAIN": {
+          "status": "open",
+          "crowdLevel": 0.85,
+          "speedFactor": 1.0
+        },
+        "NM__MZ_ALT": {
+          "status": "open",
+          "crowdLevel": 0.25,
+          "speedFactor": 1.0
+        },
+        "MZ__EX4": {
+          "status": "open",
+          "crowdLevel": 0.3,
+          "speedFactor": 1.0
+        }
+      }
     },
     "ground_truth": {
       "startNode": "NM",
@@ -525,7 +854,19 @@
     "category": "TIME",
     "query": "I'm running late—what's the fastest way to the downtown platform from here?",
     "snapshot": {
-      "graphVersion": 21
+      "graphVersion": 21,
+      "edgeState": {
+        "NM__PL_D_FAST": {
+          "status": "open",
+          "crowdLevel": 0.6,
+          "speedFactor": 1.0
+        },
+        "NM__PL_D_SLOW": {
+          "status": "open",
+          "crowdLevel": 0.2,
+          "speedFactor": 2.0
+        }
+      }
     },
     "ground_truth": {
       "startNode": "NM",
@@ -551,7 +892,19 @@
     "category": "TIME",
     "query": "What's the quickest route to Exit 1 right now?",
     "snapshot": {
-      "graphVersion": 22
+      "graphVersion": 22,
+      "edgeState": {
+        "MZ__EX1_MAIN": {
+          "status": "open",
+          "crowdLevel": 0.4,
+          "speedFactor": 1.0
+        },
+        "MZ__EX1_ALT": {
+          "status": "open",
+          "crowdLevel": 0.1,
+          "speedFactor": 1.5
+        }
+      }
     },
     "ground_truth": {
       "startNode": "MZ",
@@ -577,7 +930,19 @@
     "category": "TIME",
     "query": "Fastest way to the uptown platform—please.",
     "snapshot": {
-      "graphVersion": 23
+      "graphVersion": 23,
+      "edgeState": {
+        "NM__PL_U_A": {
+          "status": "open",
+          "crowdLevel": 0.7,
+          "speedFactor": 1.0
+        },
+        "NM__PL_U_B": {
+          "status": "open",
+          "crowdLevel": 0.2,
+          "speedFactor": 1.2
+        }
+      }
     },
     "ground_truth": {
       "startNode": "NM",
@@ -603,7 +968,19 @@
     "category": "TIME",
     "query": "I need to transfer ASAP—what's the fastest route to the transfer corridor?",
     "snapshot": {
-      "graphVersion": 24
+      "graphVersion": 24,
+      "edgeState": {
+        "PL_D__XFER_A": {
+          "status": "open",
+          "crowdLevel": 0.5,
+          "speedFactor": 1.0
+        },
+        "PL_D__XFER_B": {
+          "status": "open",
+          "crowdLevel": 0.2,
+          "speedFactor": 1.4
+        }
+      }
     },
     "ground_truth": {
       "startNode": "PL_D",
@@ -629,7 +1006,19 @@
     "category": "TIME",
     "query": "What's the fastest way out of the station from the downtown platform?",
     "snapshot": {
-      "graphVersion": 25
+      "graphVersion": 25,
+      "edgeState": {
+        "PL_D__EX4_FAST": {
+          "status": "open",
+          "crowdLevel": 0.6,
+          "speedFactor": 1.0
+        },
+        "PL_D__EX4_SLOW": {
+          "status": "open",
+          "crowdLevel": 0.1,
+          "speedFactor": 2.0
+        }
+      }
     },
     "ground_truth": {
       "startNode": "PL_D",
@@ -655,7 +1044,19 @@
     "category": "TIME",
     "query": "Quickest path to Exit 3—I'm in a hurry.",
     "snapshot": {
-      "graphVersion": 26
+      "graphVersion": 26,
+      "edgeState": {
+        "NM__EX3_MAIN": {
+          "status": "open",
+          "crowdLevel": 0.8,
+          "speedFactor": 1.0
+        },
+        "NM__EX3_ALT": {
+          "status": "open",
+          "crowdLevel": 0.3,
+          "speedFactor": 1.3
+        }
+      }
     },
     "ground_truth": {
       "startNode": "NM",
@@ -681,7 +1082,19 @@
     "category": "TIME",
     "query": "Fastest route from the mezzanine to the uptown platform, please.",
     "snapshot": {
-      "graphVersion": 27
+      "graphVersion": 27,
+      "edgeState": {
+        "MZ__PL_U_A": {
+          "status": "open",
+          "crowdLevel": 0.6,
+          "speedFactor": 1.0
+        },
+        "MZ__PL_U_B": {
+          "status": "open",
+          "crowdLevel": 0.2,
+          "speedFactor": 1.5
+        }
+      }
     },
     "ground_truth": {
       "startNode": "MZ",
@@ -707,7 +1120,19 @@
     "category": "TIME",
     "query": "What's the fastest route to Exit 2 from the entrance area?",
     "snapshot": {
-      "graphVersion": 28
+      "graphVersion": 28,
+      "edgeState": {
+        "NM__EX2_A": {
+          "status": "open",
+          "crowdLevel": 0.4,
+          "speedFactor": 1.0
+        },
+        "NM__EX2_B": {
+          "status": "open",
+          "crowdLevel": 0.2,
+          "speedFactor": 1.4
+        }
+      }
     },
     "ground_truth": {
       "startNode": "NM",
@@ -733,7 +1158,19 @@
     "category": "TIME",
     "query": "I have 2 minutes—fastest way to the transfer corridor?",
     "snapshot": {
-      "graphVersion": 29
+      "graphVersion": 29,
+      "edgeState": {
+        "NM__XFER_A": {
+          "status": "open",
+          "crowdLevel": 0.7,
+          "speedFactor": 1.0
+        },
+        "NM__XFER_B": {
+          "status": "open",
+          "crowdLevel": 0.1,
+          "speedFactor": 1.6
+        }
+      }
     },
     "ground_truth": {
       "startNode": "NM",
@@ -759,7 +1196,19 @@
     "category": "TIME",
     "query": "What's the fastest way from the uptown platform to Exit 1?",
     "snapshot": {
-      "graphVersion": 30
+      "graphVersion": 30,
+      "edgeState": {
+        "PL_U__EX1_A": {
+          "status": "open",
+          "crowdLevel": 0.5,
+          "speedFactor": 1.0
+        },
+        "PL_U__EX1_B": {
+          "status": "open",
+          "crowdLevel": 0.2,
+          "speedFactor": 1.7
+        }
+      }
     },
     "ground_truth": {
       "startNode": "PL_U",
@@ -785,7 +1234,19 @@
     "category": "DISTANCE",
     "query": "What's the shortest walking route to Exit 2?",
     "snapshot": {
-      "graphVersion": 31
+      "graphVersion": 31,
+      "edgeState": {
+        "NM__EX2_SHORT": {
+          "status": "open",
+          "crowdLevel": 0.7,
+          "speedFactor": 1.0
+        },
+        "NM__EX2_LONG": {
+          "status": "open",
+          "crowdLevel": 0.1,
+          "speedFactor": 1.0
+        }
+      }
     },
     "ground_truth": {
       "startNode": "NM",
@@ -811,7 +1272,19 @@
     "category": "DISTANCE",
     "query": "Show me the most direct path to the downtown platform.",
     "snapshot": {
-      "graphVersion": 32
+      "graphVersion": 32,
+      "edgeState": {
+        "MZ__PL_D_SHORT": {
+          "status": "open",
+          "crowdLevel": 0.8,
+          "speedFactor": 1.0
+        },
+        "MZ__PL_D_LONG": {
+          "status": "open",
+          "crowdLevel": 0.2,
+          "speedFactor": 0.9
+        }
+      }
     },
     "ground_truth": {
       "startNode": "MZ",
@@ -837,7 +1310,19 @@
     "category": "DISTANCE",
     "query": "I want the shortest route to the transfer corridor—distance matters more than time.",
     "snapshot": {
-      "graphVersion": 33
+      "graphVersion": 33,
+      "edgeState": {
+        "PL_U__XFER_SHORT": {
+          "status": "open",
+          "crowdLevel": 0.6,
+          "speedFactor": 1.0
+        },
+        "PL_U__XFER_LONG": {
+          "status": "open",
+          "crowdLevel": 0.1,
+          "speedFactor": 1.0
+        }
+      }
     },
     "ground_truth": {
       "startNode": "PL_U",
@@ -863,7 +1348,19 @@
     "category": "DISTANCE",
     "query": "What's the shortest path from the uptown platform to Exit 3?",
     "snapshot": {
-      "graphVersion": 34
+      "graphVersion": 34,
+      "edgeState": {
+        "PL_U__EX3_SHORT": {
+          "status": "open",
+          "crowdLevel": 0.9,
+          "speedFactor": 1.0
+        },
+        "PL_U__EX3_LONG": {
+          "status": "open",
+          "crowdLevel": 0.1,
+          "speedFactor": 1.0
+        }
+      }
     },
     "ground_truth": {
       "startNode": "PL_U",
@@ -889,7 +1386,19 @@
     "category": "DISTANCE",
     "query": "Most direct way to the mezzanine from the downtown platform?",
     "snapshot": {
-      "graphVersion": 35
+      "graphVersion": 35,
+      "edgeState": {
+        "PL_D__MZ_SHORT": {
+          "status": "open",
+          "crowdLevel": 0.8,
+          "speedFactor": 1.0
+        },
+        "PL_D__MZ_LONG": {
+          "status": "open",
+          "crowdLevel": 0.2,
+          "speedFactor": 1.0
+        }
+      }
     },
     "ground_truth": {
       "startNode": "PL_D",
@@ -915,7 +1424,19 @@
     "category": "DISTANCE",
     "query": "Shortest route to Exit 1—I'm okay if it's crowded.",
     "snapshot": {
-      "graphVersion": 36
+      "graphVersion": 36,
+      "edgeState": {
+        "NM__EX1_SHORT": {
+          "status": "open",
+          "crowdLevel": 0.95,
+          "speedFactor": 1.0
+        },
+        "NM__EX1_LONG": {
+          "status": "open",
+          "crowdLevel": 0.05,
+          "speedFactor": 1.0
+        }
+      }
     },
     "ground_truth": {
       "startNode": "NM",
@@ -941,7 +1462,19 @@
     "category": "DISTANCE",
     "query": "Give me the shortest walking path to Exit 4 from the mezzanine.",
     "snapshot": {
-      "graphVersion": 37
+      "graphVersion": 37,
+      "edgeState": {
+        "MZ__EX4_SHORT": {
+          "status": "open",
+          "crowdLevel": 0.7,
+          "speedFactor": 1.0
+        },
+        "MZ__EX4_LONG": {
+          "status": "open",
+          "crowdLevel": 0.2,
+          "speedFactor": 1.0
+        }
+      }
     },
     "ground_truth": {
       "startNode": "MZ",
@@ -967,7 +1500,19 @@
     "category": "DISTANCE",
     "query": "Most direct route to the uptown platform from the entrance area.",
     "snapshot": {
-      "graphVersion": 38
+      "graphVersion": 38,
+      "edgeState": {
+        "NM__PL_U_SHORT": {
+          "status": "open",
+          "crowdLevel": 0.85,
+          "speedFactor": 1.0
+        },
+        "NM__PL_U_LONG": {
+          "status": "open",
+          "crowdLevel": 0.15,
+          "speedFactor": 1.0
+        }
+      }
     },
     "ground_truth": {
       "startNode": "NM",
@@ -993,7 +1538,19 @@
     "category": "DISTANCE",
     "query": "Shortest route to the transfer corridor from the mezzanine, please.",
     "snapshot": {
-      "graphVersion": 39
+      "graphVersion": 39,
+      "edgeState": {
+        "MZ__XFER_SHORT": {
+          "status": "open",
+          "crowdLevel": 0.6,
+          "speedFactor": 1.0
+        },
+        "MZ__XFER_LONG": {
+          "status": "open",
+          "crowdLevel": 0.1,
+          "speedFactor": 1.0
+        }
+      }
     },
     "ground_truth": {
       "startNode": "MZ",
@@ -1019,7 +1576,19 @@
     "category": "DISTANCE",
     "query": "What's the most direct path to Exit 2 from the uptown platform?",
     "snapshot": {
-      "graphVersion": 40
+      "graphVersion": 40,
+      "edgeState": {
+        "PL_U__EX2_SHORT": {
+          "status": "open",
+          "crowdLevel": 0.8,
+          "speedFactor": 1.0
+        },
+        "PL_U__EX2_LONG": {
+          "status": "open",
+          "crowdLevel": 0.2,
+          "speedFactor": 1.0
+        }
+      }
     },
     "ground_truth": {
       "startNode": "PL_U",
@@ -1045,7 +1614,24 @@
     "category": "EMERGENCY",
     "query": "There's an emergency—what's the safest way to Exit 4 right now?",
     "snapshot": {
-      "graphVersion": 41
+      "graphVersion": 41,
+      "edgeState": {
+        "MZ__C1": {
+          "status": "blocked"
+        },
+        "MZ__C2": {
+          "status": "open",
+          "crowdLevel": 0.4,
+          "speedFactor": 1.0,
+          "hazardLevel": 0.2
+        },
+        "C2__EX4": {
+          "status": "open",
+          "crowdLevel": 0.6,
+          "speedFactor": 1.0,
+          "hazardLevel": 0.1
+        }
+      }
     },
     "ground_truth": {
       "startNode": "MZ",
@@ -1071,7 +1657,18 @@
     "category": "EMERGENCY",
     "query": "Is anything blocked? Please route me away from the emergency area to Exit 2.",
     "snapshot": {
-      "graphVersion": 42
+      "graphVersion": 42,
+      "edgeState": {
+        "NM__C_EMERG": {
+          "status": "blocked"
+        },
+        "NM__C_SAFE": {
+          "status": "open",
+          "crowdLevel": 0.5,
+          "speedFactor": 1.0,
+          "hazardLevel": 0.0
+        }
+      }
     },
     "ground_truth": {
       "startNode": "NM",
@@ -1097,7 +1694,21 @@
     "category": "EMERGENCY",
     "query": "I see smoke—how do I evacuate safely to Exit 1 and avoid crowded corridors?",
     "snapshot": {
-      "graphVersion": 43
+      "graphVersion": 43,
+      "edgeState": {
+        "PL_D__MZ_SMOKE": {
+          "status": "open",
+          "crowdLevel": 0.3,
+          "speedFactor": 1.0,
+          "hazardLevel": 0.9
+        },
+        "PL_D__MZ_CLEAR": {
+          "status": "open",
+          "crowdLevel": 0.7,
+          "speedFactor": 1.0,
+          "hazardLevel": 0.1
+        }
+      }
     },
     "ground_truth": {
       "startNode": "PL_D",
@@ -1123,7 +1734,21 @@
     "category": "EMERGENCY",
     "query": "Emergency alert—what's the safest route from the uptown platform to the mezzanine?",
     "snapshot": {
-      "graphVersion": 44
+      "graphVersion": 44,
+      "edgeState": {
+        "PL_U__ST1": {
+          "status": "open",
+          "crowdLevel": 0.2,
+          "speedFactor": 1.0,
+          "hazardLevel": 0.6
+        },
+        "PL_U__EL2": {
+          "status": "open",
+          "crowdLevel": 0.6,
+          "speedFactor": 1.0,
+          "hazardLevel": 0.1
+        }
+      }
     },
     "ground_truth": {
       "startNode": "PL_U",
@@ -1149,7 +1774,18 @@
     "category": "EMERGENCY",
     "query": "Fire drill—avoid the blocked corridor and guide me to Exit 3.",
     "snapshot": {
-      "graphVersion": 45
+      "graphVersion": 45,
+      "edgeState": {
+        "MZ__C_BLOCKED": {
+          "status": "blocked"
+        },
+        "MZ__C_ALT": {
+          "status": "open",
+          "crowdLevel": 0.8,
+          "speedFactor": 1.0,
+          "hazardLevel": 0.0
+        }
+      }
     },
     "ground_truth": {
       "startNode": "MZ",
@@ -1175,7 +1811,21 @@
     "category": "EMERGENCY",
     "query": "There's a hazard near the turnstiles—what's the safest way out to Exit 4?",
     "snapshot": {
-      "graphVersion": 46
+      "graphVersion": 46,
+      "edgeState": {
+        "NM__TURNSTILE": {
+          "status": "open",
+          "crowdLevel": 0.9,
+          "speedFactor": 1.0,
+          "hazardLevel": 0.8
+        },
+        "NM__BYPASS": {
+          "status": "open",
+          "crowdLevel": 0.4,
+          "speedFactor": 1.0,
+          "hazardLevel": 0.1
+        }
+      }
     },
     "ground_truth": {
       "startNode": "NM",
@@ -1201,7 +1851,21 @@
     "category": "EMERGENCY",
     "query": "Evacuate me from the downtown platform to Exit 2—avoid smoke and heavy crowds.",
     "snapshot": {
-      "graphVersion": 47
+      "graphVersion": 47,
+      "edgeState": {
+        "PL_D__MZ_SMOKE": {
+          "status": "open",
+          "crowdLevel": 0.2,
+          "speedFactor": 1.0,
+          "hazardLevel": 0.9
+        },
+        "PL_D__MZ_CLEAR": {
+          "status": "open",
+          "crowdLevel": 0.8,
+          "speedFactor": 1.0,
+          "hazardLevel": 0.1
+        }
+      }
     },
     "ground_truth": {
       "startNode": "PL_D",
@@ -1227,7 +1891,18 @@
     "category": "EMERGENCY",
     "query": "Emergency closure reported—what's the safest route to the transfer corridor from here?",
     "snapshot": {
-      "graphVersion": 48
+      "graphVersion": 48,
+      "edgeState": {
+        "NM__XFER_MAIN": {
+          "status": "blocked"
+        },
+        "NM__XFER_ALT": {
+          "status": "open",
+          "crowdLevel": 0.6,
+          "speedFactor": 1.0,
+          "hazardLevel": 0.1
+        }
+      }
     },
     "ground_truth": {
       "startNode": "NM",
@@ -1253,7 +1928,18 @@
     "category": "EMERGENCY",
     "query": "I need the safest exit route—are there any blocked paths to Exit 1?",
     "snapshot": {
-      "graphVersion": 49
+      "graphVersion": 49,
+      "edgeState": {
+        "MZ__EX1_MAIN": {
+          "status": "blocked"
+        },
+        "MZ__EX1_ALT": {
+          "status": "open",
+          "crowdLevel": 0.7,
+          "speedFactor": 1.0,
+          "hazardLevel": 0.0
+        }
+      }
     },
     "ground_truth": {
       "startNode": "MZ",
@@ -1279,7 +1965,21 @@
     "category": "EMERGENCY",
     "query": "There's an emergency on the mezzanine—what's the safest path to Exit 2?",
     "snapshot": {
-      "graphVersion": 50
+      "graphVersion": 50,
+      "edgeState": {
+        "MZ__C_EMERG": {
+          "status": "open",
+          "crowdLevel": 0.4,
+          "speedFactor": 1.0,
+          "hazardLevel": 0.85
+        },
+        "MZ__C_SAFE": {
+          "status": "open",
+          "crowdLevel": 0.8,
+          "speedFactor": 1.0,
+          "hazardLevel": 0.05
+        }
+      }
     },
     "ground_truth": {
       "startNode": "MZ",
@@ -1305,7 +2005,19 @@
     "category": "EXIT_CLOSE_TO_DESTINATION",
     "query": "Which exit should I take to get closest to Union Square?",
     "snapshot": {
-      "graphVersion": 51
+      "graphVersion": 51,
+      "edgeState": {
+        "MZ__EX1": {
+          "status": "open",
+          "crowdLevel": 0.4,
+          "speedFactor": 1.0
+        },
+        "MZ__EX2": {
+          "status": "open",
+          "crowdLevel": 0.6,
+          "speedFactor": 1.0
+        }
+      }
     },
     "ground_truth": {
       "startNode": "MZ",
@@ -1332,7 +2044,19 @@
     "category": "EXIT_CLOSE_TO_DESTINATION",
     "query": "I'm heading to the pharmacy across the street—what's the best exit for that?",
     "snapshot": {
-      "graphVersion": 52
+      "graphVersion": 52,
+      "edgeState": {
+        "NM__EX3": {
+          "status": "open",
+          "crowdLevel": 0.7,
+          "speedFactor": 1.0
+        },
+        "NM__EX4": {
+          "status": "open",
+          "crowdLevel": 0.3,
+          "speedFactor": 1.0
+        }
+      }
     },
     "ground_truth": {
       "startNode": "NM",
@@ -1359,7 +2083,19 @@
     "category": "EXIT_CLOSE_TO_DESTINATION",
     "query": "Which exit is closest to the bus stop outside?",
     "snapshot": {
-      "graphVersion": 53
+      "graphVersion": 53,
+      "edgeState": {
+        "MZ__EX2": {
+          "status": "open",
+          "crowdLevel": 0.8,
+          "speedFactor": 1.0
+        },
+        "MZ__EX4": {
+          "status": "open",
+          "crowdLevel": 0.2,
+          "speedFactor": 1.0
+        }
+      }
     },
     "ground_truth": {
       "startNode": "MZ",
@@ -1386,7 +2122,24 @@
     "category": "EXIT_CLOSE_TO_DESTINATION",
     "query": "I'm going to 14th Street and Broadway—what exit should I use?",
     "snapshot": {
-      "graphVersion": 54
+      "graphVersion": 54,
+      "edgeState": {
+        "PL_U__MZ": {
+          "status": "open",
+          "crowdLevel": 0.5,
+          "speedFactor": 1.0
+        },
+        "MZ__EX1": {
+          "status": "open",
+          "crowdLevel": 0.4,
+          "speedFactor": 1.0
+        },
+        "MZ__EX3": {
+          "status": "open",
+          "crowdLevel": 0.6,
+          "speedFactor": 1.0
+        }
+      }
     },
     "ground_truth": {
       "startNode": "PL_U",
@@ -1413,7 +2166,19 @@
     "category": "EXIT_CLOSE_TO_DESTINATION",
     "query": "Which exit puts me closest to the coffee shop outside?",
     "snapshot": {
-      "graphVersion": 55
+      "graphVersion": 55,
+      "edgeState": {
+        "NM__EX1": {
+          "status": "open",
+          "crowdLevel": 0.9,
+          "speedFactor": 1.0
+        },
+        "NM__EX2": {
+          "status": "open",
+          "crowdLevel": 0.2,
+          "speedFactor": 1.0
+        }
+      }
     },
     "ground_truth": {
       "startNode": "NM",
@@ -1440,7 +2205,19 @@
     "category": "EXIT_CLOSE_TO_DESTINATION",
     "query": "I need to get to the museum nearby—what's the best exit?",
     "snapshot": {
-      "graphVersion": 56
+      "graphVersion": 56,
+      "edgeState": {
+        "MZ__EX1": {
+          "status": "open",
+          "crowdLevel": 0.3,
+          "speedFactor": 1.0
+        },
+        "MZ__EX4": {
+          "status": "open",
+          "crowdLevel": 0.7,
+          "speedFactor": 1.0
+        }
+      }
     },
     "ground_truth": {
       "startNode": "MZ",
@@ -1467,7 +2244,24 @@
     "category": "EXIT_CLOSE_TO_DESTINATION",
     "query": "It's raining—can you take me to the exit that's closest to my destination outside?",
     "snapshot": {
-      "graphVersion": 57
+      "graphVersion": 57,
+      "edgeState": {
+        "PL_D__MZ": {
+          "status": "open",
+          "crowdLevel": 0.5,
+          "speedFactor": 1.0
+        },
+        "MZ__EX2": {
+          "status": "open",
+          "crowdLevel": 0.6,
+          "speedFactor": 1.0
+        },
+        "MZ__EX4": {
+          "status": "open",
+          "crowdLevel": 0.2,
+          "speedFactor": 1.0
+        }
+      }
     },
     "ground_truth": {
       "startNode": "PL_D",
@@ -1494,7 +2288,19 @@
     "category": "EXIT_CLOSE_TO_DESTINATION",
     "query": "Which exit should I take for the closest walk to the park?",
     "snapshot": {
-      "graphVersion": 58
+      "graphVersion": 58,
+      "edgeState": {
+        "NM__EX3": {
+          "status": "open",
+          "crowdLevel": 0.4,
+          "speedFactor": 1.0
+        },
+        "NM__EX4": {
+          "status": "open",
+          "crowdLevel": 0.6,
+          "speedFactor": 1.0
+        }
+      }
     },
     "ground_truth": {
       "startNode": "NM",
@@ -1521,7 +2327,19 @@
     "category": "EXIT_CLOSE_TO_DESTINATION",
     "query": "What's the best exit to reach the cinema fastest overall?",
     "snapshot": {
-      "graphVersion": 59
+      "graphVersion": 59,
+      "edgeState": {
+        "MZ__EX1": {
+          "status": "open",
+          "crowdLevel": 0.2,
+          "speedFactor": 1.0
+        },
+        "MZ__EX2": {
+          "status": "open",
+          "crowdLevel": 0.8,
+          "speedFactor": 1.0
+        }
+      }
     },
     "ground_truth": {
       "startNode": "MZ",
@@ -1548,7 +2366,24 @@
     "category": "EXIT_CLOSE_TO_DESTINATION",
     "query": "I'm meeting someone on Broadway—what exit gets me closest outside?",
     "snapshot": {
-      "graphVersion": 60
+      "graphVersion": 60,
+      "edgeState": {
+        "PL_U__MZ": {
+          "status": "open",
+          "crowdLevel": 0.3,
+          "speedFactor": 1.0
+        },
+        "MZ__EX2": {
+          "status": "open",
+          "crowdLevel": 0.5,
+          "speedFactor": 1.0
+        },
+        "MZ__EX3": {
+          "status": "open",
+          "crowdLevel": 0.4,
+          "speedFactor": 1.0
+        }
+      }
     },
     "ground_truth": {
       "startNode": "PL_U",
@@ -1569,5 +2404,84 @@
       "externalDestination": "Broadway"
     },
     "seed": 1059
+  },
+  {
+    "id": "EXAMPLE_001",
+    "category": "TEST",
+    "user": "Please avoid stairs and minimize crowding, go to Exit 4.",
+    "start": "NM",
+    "goal": "EX4",
+    "seed": 42,
+    "snapshot": {
+      "graphVersion": 1000,
+      "edgeState": {
+        "NM__C1": {
+          "status": "open",
+          "crowdLevel": 0.2,
+          "speedFactor": 1.0
+        },
+        "C1__MZ": {
+          "status": "open",
+          "crowdLevel": 0.1,
+          "speedFactor": 1.0
+        },
+        "MZ__EX4": {
+          "status": "open",
+          "crowdLevel": 0.05,
+          "speedFactor": 1.0
+        }
+      }
+    }
+  },
+  {
+    "id": "EXAMPLE_002",
+    "category": "TEST",
+    "user": "I have heavy luggage—avoid stairs, prefer elevators.",
+    "start": "PL_D",
+    "goal": "EX2",
+    "seed": 123,
+    "snapshot": {
+      "graphVersion": 1001,
+      "edgeState": {
+        "PL_D__EL1": {
+          "status": "open",
+          "crowdLevel": 0.3,
+          "speedFactor": 1.0
+        },
+        "EL1__MZ": {
+          "status": "open",
+          "crowdLevel": 0.4,
+          "speedFactor": 1.0
+        },
+        "MZ__EX2": {
+          "status": "open",
+          "crowdLevel": 0.2,
+          "speedFactor": 1.0
+        }
+      }
+    }
+  },
+  {
+    "id": "EXAMPLE_003",
+    "category": "TEST",
+    "user": "Fastest route to downtown platform, I am late.",
+    "start": "NM",
+    "goal": "PL_D",
+    "seed": 7,
+    "snapshot": {
+      "graphVersion": 1002,
+      "edgeState": {
+        "NM__PL_D_FAST": {
+          "status": "open",
+          "crowdLevel": 0.6,
+          "speedFactor": 1.0
+        },
+        "NM__PL_D_ALT": {
+          "status": "open",
+          "crowdLevel": 0.2,
+          "speedFactor": 1.5
+        }
+      }
+    }
   }
 ]

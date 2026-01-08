@@ -6,7 +6,9 @@ import time
 import requests
 
 HERE = os.path.dirname(__file__)
-ROOT = os.path.abspath(os.path.join(HERE, ".."))
+# Use the script directory as the repo root so data/edges.json resolves to
+# <repo>/data/edges.json when the script lives in the repo root.
+ROOT = os.path.abspath(HERE)
 EDGES_PATH = os.path.join(ROOT, "data", "edges.json")
 
 def normalize(n):
@@ -34,7 +36,7 @@ def build_payload(edges, version):
             hazard = round(random.uniform(0.5, 1.0), 3)
 
         speed_factor = round(1.0 + 0.5 * crowd + (0.5 if random.random() < 0.05 else 0.0), 3)
-        status = "blocked" if hazard > 0.9 else "open"
+        status = "blocked" if hazard > 0.7 else "open"
 
         st = {"status": status, "crowdLevel": crowd, "speedFactor": speed_factor, "hazardLevel": hazard}
         out["edges"][id1] = st
@@ -44,7 +46,7 @@ def build_payload(edges, version):
 def main():
     p = argparse.ArgumentParser()
     p.add_argument("--backend", default="http://127.0.0.1:5000", help="Backend base URL")
-    p.add_argument("--interval", type=float, default=5.0, help="Seconds between updates")
+    p.add_argument("--interval", type=float, default=30.0, help="Seconds between updates")
     p.add_argument("--seed", type=int, default=None, help="Random seed")
     args = p.parse_args()
 

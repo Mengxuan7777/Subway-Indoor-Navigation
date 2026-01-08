@@ -548,7 +548,7 @@ applyEdgeState(edgeStateByKey) {
 
     // --- Construction (speedFactor > 1): dashed line, no color change ---
     const sf = (typeof st.speedFactor === "number") ? st.speedFactor : 1.0;
-    if (sf > 1.001) {
+    if (sf > 1.5) {
       line.material.dashed = true;
       line.material.dashSize = this.DASH_SIZE;
       line.material.gapSize = this.GAP_SIZE;

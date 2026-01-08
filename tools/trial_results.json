@@ -1,0 +1,65 @@
+[
+  {
+    "timestamp": "2026-01-08T03:36:27.478545Z",
+    "gt_nodes": [
+      "DS1",
+      "DP7",
+      "EL2",
+      "ELM2",
+      "NM4",
+      "NT",
+      "NM2",
+      "EX4"
+    ],
+    "llm_nodes": [
+      "DS1",
+      "DP7",
+      "EL2",
+      "ELM2",
+      "NM4",
+      "NT",
+      "NM2",
+      "EX4"
+    ],
+    "gt_edges_count": 7,
+    "llm_edges_count": 7,
+    "levenshtein_edges": 0,
+    "lcs_edges": 7,
+    "lcs_fraction": 1.0,
+    "jaccard_edges": 1.0,
+    "gt_time": 7.0,
+    "llm_time": 7.0,
+    "time_diff": 0.0,
+    "hazardous_edges_in_llm": 0,
+    "gt_constraints": {
+      "avoidStairs": true,
+      "requireElevator": true,
+      "avoidHazards": false
+    },
+    "gt_weights": {
+      "access": 1.0,
+      "risk": 0.3,
+      "time": 0.2,
+      "crowd": 0.2,
+      "distance": 0.1,
+      "exitDistance": 0.0
+    },
+    "llm_constraints": {
+      "avoidStairs": true,
+      "requireElevator": true,
+      "avoidHazards": false
+    },
+    "llm_weights": {
+      "access": 1.0,
+      "risk": 0.3,
+      "time": 0.2,
+      "crowd": 0.2,
+      "distance": 0.1,
+      "exitDistance": 0.0
+    },
+    "constraints_diff_keys": [],
+    "weights_diff": {},
+    "scenario_id": "ADA_01",
+    "user_text": "I'm in a wheelchair\u2014can you guide me to Exit 4 using elevators only? No stairs."
+  }
+]

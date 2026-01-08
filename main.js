@@ -160,6 +160,7 @@ function buildLLMPrompt(start, goal, userSentence) {
     "UserRequest: " + userSentence + "\n\n" +
     "Return ONLY JSON with EXACT schema:\n" +
     "{\n" +
+    '  "category": "ADA|TIME|DISTANCE|EMERGENCY",  // one of these labels\n' +
     '  "constraints": {"avoidStairs": boolean, "requireElevator": boolean, "avoidHazards": boolean},\n' +
     '  "weights": {"time": number, "distance": number, "crowd": number, "risk": number}\n' +
     "}\n\n" +
@@ -168,12 +169,15 @@ function buildLLMPrompt(start, goal, userSentence) {
     "- If wheelchair/accessible/no stairs is mentioned: avoidStairs=true and requireElevator=true.\n" +
     "- If emergency/smoke/fire/hazard is mentioned: avoidHazards=true and risk should be the highest weight.\n" +
     "- If user says avoid crowds/least crowded: crowd should be the highest weight.\n" +
-    "- Otherwise: time should be the highest weight.\n"
+    "- If user says shortest/least walking: distance should be the highest weight.\n" +
+    "- Otherwise: hazard should be the highest weight.\n" +
+    "- Set `category` to exactly one of: \"ADA\", \"TIME\", \"DISTANCE\", \"EMERGENCY\" based on the primary user intent.\n"
   );
 }
 
 function defaultRoutingParams() {
   return {
+    category: "TIME",
     constraints: { avoidStairs: false, requireElevator: false, avoidHazards: false },
     weights: { time: 1.0, distance: 0.1, crowd: 0.2, risk: 0.2 }
   };
@@ -187,6 +191,13 @@ function sanitizeParams(obj) {
     out.constraints.avoidStairs = !!obj.constraints.avoidStairs;
     out.constraints.requireElevator = !!obj.constraints.requireElevator;
     out.constraints.avoidHazards = !!obj.constraints.avoidHazards;
+  }
+
+  // category (optional) — normalize and validate
+  const validCats = new Set(["ADA", "TIME", "DISTANCE", "EMERGENCY"]);
+  if (obj && typeof obj.category === "string") {
+    const c = obj.category.trim().toUpperCase();
+    out.category = validCats.has(c) ? c : out.category;
   }
 
   function numOr0(x) {
