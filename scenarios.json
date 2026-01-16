@@ -2,7 +2,7 @@
   {
     "case_id": "ADA_01",
     "category": "ADA",
-    "query": "I'm in a wheelchair—can you guide me to Exit 4 using elevators only? No stairs.",
+    "query": "I'm in a wheelchair. Can you guide me to Exit 4 using elevators only? No stairs.",
     "snapshot": {
       "graphVersion": 1
     },
@@ -16,12 +16,10 @@
         "avoidHazards": false
       },
       "weights": {
-        "access": 1.0,
-        "risk": 0.3,
-        "time": 0.2,
+        "time": 0.1,
+        "distance": 0.2,
         "crowd": 0.2,
-        "distance": 0.1,
-        "exitDistance": 0.0
+        "risk": 0.5
       }
     },
     "seed": 1000
@@ -29,25 +27,23 @@
   {
     "case_id": "ADA_02",
     "category": "ADA",
-    "query": "I can't take stairs—what's the accessible route to the uptown platform from the mezzanine?",
+    "query": "I can't take stairs. What's the accessible route to the uptown platform?",
     "snapshot": {
       "graphVersion": 2
     },
     "ground_truth": {
-      "startNode": "MZ",
-      "endNode": "PL_U",
+      "startNode": "NM1",
+      "endNode": "UP10",
       "constraints": {
         "avoidStairs": true,
         "requireElevator": true,
         "avoidHazards": false
       },
       "weights": {
-        "access": 1.0,
-        "risk": 0.3,
-        "time": 0.2,
+        "time": 0.1,
+        "distance": 0.2,
         "crowd": 0.2,
-        "distance": 0.1,
-        "exitDistance": 0.0
+        "risk": 0.5
       }
     },
     "seed": 1001
@@ -60,7 +56,7 @@
       "graphVersion": 3
     },
     "ground_truth": {
-      "startNode": "PL_D",
+      "startNode": "DS3",
       "endNode": "EX2",
       "constraints": {
         "avoidStairs": true,
@@ -68,12 +64,10 @@
         "avoidHazards": false
       },
       "weights": {
-        "access": 1.0,
-        "risk": 0.3,
-        "time": 0.2,
+        "time": 0.1,
+        "distance": 0.2,
         "crowd": 0.2,
-        "distance": 0.1,
-        "exitDistance": 0.0
+        "risk": 0.5
       }
     },
     "seed": 1002
@@ -81,25 +75,23 @@
   {
     "case_id": "ADA_04",
     "category": "ADA",
-    "query": "I have heavy luggage—no stairs please. What's the accessible way to the downtown platform?",
+    "query": "I have heavy luggage—no stairs please. What's the accessible way to the downtown platform ASAP?",
     "snapshot": {
       "graphVersion": 4
     },
     "ground_truth": {
-      "startNode": "NM",
-      "endNode": "PL_D",
+      "startNode": "EX3",
+      "endNode": "DP4",
       "constraints": {
         "avoidStairs": true,
         "requireElevator": true,
         "avoidHazards": false
       },
       "weights": {
-        "access": 1.0,
-        "risk": 0.3,
-        "time": 0.2,
-        "crowd": 0.2,
+        "time": 0.3,
         "distance": 0.1,
-        "exitDistance": 0.0
+        "crowd": 0.1,
+        "risk": 0.5
       }
     },
     "seed": 1003
@@ -112,7 +104,7 @@
       "graphVersion": 5
     },
     "ground_truth": {
-      "startNode": "MZ",
+      "startNode": "UP12",
       "endNode": "EX1",
       "constraints": {
         "avoidStairs": true,
@@ -120,12 +112,10 @@
         "avoidHazards": false
       },
       "weights": {
-        "access": 1.0,
-        "risk": 0.3,
-        "time": 0.2,
+        "time": 0.1,
+        "distance": 0.2,
         "crowd": 0.2,
-        "distance": 0.1,
-        "exitDistance": 0.0
+        "risk": 0.5
       }
     },
     "seed": 1004
@@ -138,7 +128,7 @@
       "graphVersion": 6
     },
     "ground_truth": {
-      "startNode": "NM",
+      "startNode": "DP11",
       "endNode": "EX3",
       "constraints": {
         "avoidStairs": true,
@@ -146,12 +136,10 @@
         "avoidHazards": false
       },
       "weights": {
-        "access": 1.0,
-        "risk": 0.3,
-        "time": 0.2,
-        "crowd": 0.2,
+        "time": 0.1,
         "distance": 0.1,
-        "exitDistance": 0.0
+        "crowd": 0.3,
+        "risk": 0.5
       }
     },
     "seed": 1005
@@ -159,25 +147,23 @@
   {
     "case_id": "ADA_07",
     "category": "ADA",
-    "query": "Please route me to the transfer corridor using elevators only—stairs aren't an option.",
+    "query": "Please route me to the downtown platform using elevators only.",
     "snapshot": {
       "graphVersion": 7
     },
     "ground_truth": {
-      "startNode": "PL_U",
-      "endNode": "XFER",
+      "startNode": "UP1",
+      "endNode": "DP6",
       "constraints": {
         "avoidStairs": true,
         "requireElevator": true,
         "avoidHazards": false
       },
       "weights": {
-        "access": 1.0,
-        "risk": 0.3,
-        "time": 0.2,
+        "time": 0.1,
+        "distance": 0.2,
         "crowd": 0.2,
-        "distance": 0.1,
-        "exitDistance": 0.0
+        "risk": 0.5
       }
     },
     "seed": 1006
@@ -190,7 +176,7 @@
       "graphVersion": 8
     },
     "ground_truth": {
-      "startNode": "PL_D",
+      "startNode": "DP3",
       "endNode": "EX4",
       "constraints": {
         "avoidStairs": true,
@@ -198,12 +184,10 @@
         "avoidHazards": false
       },
       "weights": {
-        "access": 1.0,
-        "risk": 0.3,
-        "time": 0.2,
+        "time": 0.1,
+        "distance": 0.2,
         "crowd": 0.2,
-        "distance": 0.1,
-        "exitDistance": 0.0
+        "risk": 0.5
       }
     },
     "seed": 1007
@@ -217,19 +201,17 @@
     },
     "ground_truth": {
       "startNode": "EX2",
-      "endNode": "PL_U",
+      "endNode": "UP5",
       "constraints": {
         "avoidStairs": true,
         "requireElevator": true,
         "avoidHazards": false
       },
       "weights": {
-        "access": 1.0,
-        "risk": 0.3,
-        "time": 0.2,
+        "time": 0.1,
+        "distance": 0.2,
         "crowd": 0.2,
-        "distance": 0.1,
-        "exitDistance": 0.0
+        "risk": 0.5
       }
     },
     "seed": 1008
@@ -242,7 +224,7 @@
       "graphVersion": 10
     },
     "ground_truth": {
-      "startNode": "NM",
+      "startNode": "UP3",
       "endNode": "EX1",
       "constraints": {
         "avoidStairs": true,
@@ -250,12 +232,10 @@
         "avoidHazards": false
       },
       "weights": {
-        "access": 1.0,
-        "risk": 0.3,
-        "time": 0.2,
+        "time": 0.1,
+        "distance": 0.2,
         "crowd": 0.2,
-        "distance": 0.1,
-        "exitDistance": 0.0
+        "risk": 0.5
       }
     },
     "seed": 1009
@@ -263,25 +243,23 @@
   {
     "case_id": "CROWD_01",
     "category": "CROWD",
-    "query": "Which way to Exit 2 is least crowded right now?",
+    "query": "Which way to Exit 4 is least crowded right now?",
     "snapshot": {
       "graphVersion": 11
     },
     "ground_truth": {
-      "startNode": "NM",
-      "endNode": "EX2",
+      "startNode": "NM4",
+      "endNode": "EX4",
       "constraints": {
         "avoidStairs": false,
         "requireElevator": false,
         "avoidHazards": false
       },
       "weights": {
-        "crowd": 1.0,
-        "time": 0.35,
-        "risk": 0.25,
-        "distance": 0.15,
-        "access": 0.0,
-        "exitDistance": 0.0
+        "time": 0.1,
+        "distance": 0.1,
+        "crowd": 0.7,
+        "risk": 0.2
       }
     },
     "seed": 1010
@@ -294,20 +272,18 @@
       "graphVersion": 12
     },
     "ground_truth": {
-      "startNode": "MZ",
-      "endNode": "PL_D",
+      "startNode": "UP4",
+      "endNode": "DP10",
       "constraints": {
         "avoidStairs": false,
         "requireElevator": false,
         "avoidHazards": false
       },
       "weights": {
-        "crowd": 1.0,
-        "time": 0.35,
-        "risk": 0.25,
-        "distance": 0.15,
-        "access": 0.0,
-        "exitDistance": 0.0
+        "time": 0.1,
+        "distance": 0.1,
+        "crowd": 0.7,
+        "risk": 0.2
       }
     },
     "seed": 1011
@@ -320,20 +296,18 @@
       "graphVersion": 13
     },
     "ground_truth": {
-      "startNode": "PL_D",
-      "endNode": "PL_U",
+      "startNode": "DP3",
+      "endNode": "UP10",
       "constraints": {
         "avoidStairs": false,
         "requireElevator": false,
         "avoidHazards": false
       },
       "weights": {
-        "crowd": 1.0,
-        "time": 0.35,
-        "risk": 0.25,
-        "distance": 0.15,
-        "access": 0.0,
-        "exitDistance": 0.0
+        "time": 0.1,
+        "distance": 0.1,
+        "crowd": 0.7,
+        "risk": 0.1
       }
     },
     "seed": 1012
@@ -341,12 +315,12 @@
   {
     "case_id": "CROWD_04",
     "category": "CROWD",
-    "query": "Please avoid the busy area near the turnstiles—what's a quieter path to Exit 4?",
+    "query": "Please avoid the busy area and guide me to Exit 4?",
     "snapshot": {
       "graphVersion": 14
     },
     "ground_truth": {
-      "startNode": "NM",
+      "startNode": "DP13",
       "endNode": "EX4",
       "constraints": {
         "avoidStairs": false,
@@ -354,12 +328,10 @@
         "avoidHazards": false
       },
       "weights": {
-        "crowd": 1.0,
-        "time": 0.35,
-        "risk": 0.25,
-        "distance": 0.15,
-        "access": 0.0,
-        "exitDistance": 0.0
+        "time": 0.1,
+        "distance": 0.1,
+        "crowd": 0.7,
+        "risk": 0.1
       }
     },
     "seed": 1013
@@ -372,7 +344,7 @@
       "graphVersion": 15
     },
     "ground_truth": {
-      "startNode": "MZ",
+      "startNode": "SM1",
       "endNode": "EX1",
       "constraints": {
         "avoidStairs": false,
@@ -380,12 +352,10 @@
         "avoidHazards": false
       },
       "weights": {
-        "crowd": 1.0,
-        "time": 0.35,
-        "risk": 0.25,
-        "distance": 0.15,
-        "access": 0.0,
-        "exitDistance": 0.0
+        "time": 0.1,
+        "distance": 0.1,
+        "crowd": 0.7,
+        "risk": 0.1
       }
     },
     "seed": 1014
@@ -393,12 +363,12 @@
   {
     "case_id": "CROWD_06",
     "category": "CROWD",
-    "query": "I don't mind walking more—just get me to Exit 3 with the least crowd.",
+    "query": "I don't mind walking more—just get me to Exit 3 with the least crowd and safely.",
     "snapshot": {
       "graphVersion": 16
     },
     "ground_truth": {
-      "startNode": "PL_U",
+      "startNode": "DP1",
       "endNode": "EX3",
       "constraints": {
         "avoidStairs": false,
@@ -406,12 +376,10 @@
         "avoidHazards": false
       },
       "weights": {
-        "crowd": 1.0,
-        "time": 0.35,
-        "risk": 0.25,
-        "distance": 0.15,
-        "access": 0.0,
-        "exitDistance": 0.0
+        "time": 0.1,
+        "distance": 0.1,
+        "crowd": 0.5,
+        "risk": 0.3
       }
     },
     "seed": 1015
@@ -419,25 +387,23 @@
   {
     "case_id": "CROWD_07",
     "category": "CROWD",
-    "query": "What's the least crowded way from the downtown platform to the mezzanine?",
+    "query": "What's the least crowded way quickly from the downtown platform to the north mezzanine?",
     "snapshot": {
       "graphVersion": 17
     },
     "ground_truth": {
-      "startNode": "PL_D",
-      "endNode": "MZ",
+      "startNode": "DP10",
+      "endNode": "NM_1",
       "constraints": {
         "avoidStairs": false,
         "requireElevator": false,
         "avoidHazards": false
       },
       "weights": {
-        "crowd": 1.0,
-        "time": 0.35,
-        "risk": 0.25,
-        "distance": 0.15,
-        "access": 0.0,
-        "exitDistance": 0.0
+        "time": 0.3,
+        "distance": 0.1,
+        "crowd": 0.5,
+        "risk": 0.1
       }
     },
     "seed": 1016
@@ -445,12 +411,12 @@
   {
     "case_id": "CROWD_08",
     "category": "CROWD",
-    "query": "Avoid the crowds near Corridor C1—what's a quieter route to Exit 2?",
+    "query": "Avoid the crowds.What's the safest route to Exit 2?",
     "snapshot": {
       "graphVersion": 18
     },
     "ground_truth": {
-      "startNode": "NM",
+      "startNode": "UP9",
       "endNode": "EX2",
       "constraints": {
         "avoidStairs": false,
@@ -458,12 +424,10 @@
         "avoidHazards": false
       },
       "weights": {
-        "crowd": 1.0,
-        "time": 0.35,
-        "risk": 0.25,
-        "distance": 0.15,
-        "access": 0.0,
-        "exitDistance": 0.0
+        "time": 0.1,
+        "distance": 0.1,
+        "crowd": 0.5,
+        "risk": 0.3
       }
     },
     "seed": 1017
@@ -471,25 +435,23 @@
   {
     "case_id": "CROWD_09",
     "category": "CROWD",
-    "query": "Can you send me to the uptown platform with minimal crowding on the way?",
+    "query": "Can you send me to the uptown platform with minimal crowding and walking least?",
     "snapshot": {
       "graphVersion": 19
     },
     "ground_truth": {
-      "startNode": "MZ",
-      "endNode": "PL_U",
+      "startNode": "DP1",
+      "endNode": "UP10",
       "constraints": {
         "avoidStairs": false,
         "requireElevator": false,
         "avoidHazards": false
       },
       "weights": {
-        "crowd": 1.0,
-        "time": 0.35,
-        "risk": 0.25,
-        "distance": 0.15,
-        "access": 0.0,
-        "exitDistance": 0.0
+        "time": 0.1,
+        "distance": 0.3,
+        "crowd": 0.5,
+        "risk": 0.1
       }
     },
     "seed": 1018
@@ -497,7 +459,7 @@
   {
     "case_id": "CROWD_10",
     "category": "CROWD",
-    "query": "What's the least crowded way to Exit 4 from the entrance area?",
+    "query": "What's the least crowded way to Exit 4 as soon as possible?",
     "snapshot": {
       "graphVersion": 20
     },
@@ -510,12 +472,10 @@
         "avoidHazards": false
       },
       "weights": {
-        "crowd": 1.0,
-        "time": 0.35,
-        "risk": 0.25,
-        "distance": 0.15,
-        "access": 0.0,
-        "exitDistance": 0.0
+        "time": 0.3,
+        "distance": 0.1,
+        "crowd": 0.5,
+        "risk": 0.1
       }
     },
     "seed": 1019
@@ -523,25 +483,24 @@
   {
     "case_id": "TIME_01",
     "category": "TIME",
-    "query": "I'm running late—what's the fastest way to the downtown platform from here?",
+    "query": "I'm running late. What's the fastest way to the downtown platform?",
     "snapshot": {
       "graphVersion": 21
     },
     "ground_truth": {
-      "startNode": "NM",
-      "endNode": "PL_D",
+      "startNode": "UP12",
+      "endNode": "DP12",
+      "category": "ADA",
       "constraints": {
         "avoidStairs": false,
         "requireElevator": false,
         "avoidHazards": false
       },
       "weights": {
-        "time": 1.0,
-        "crowd": 0.25,
-        "risk": 0.25,
+        "time": 0.7,
         "distance": 0.1,
-        "access": 0.0,
-        "exitDistance": 0.0
+        "crowd": 0.1,
+        "risk": 0.1
       }
     },
     "seed": 1020
@@ -554,7 +513,7 @@
       "graphVersion": 22
     },
     "ground_truth": {
-      "startNode": "MZ",
+      "startNode": "SM1",
       "endNode": "EX1",
       "constraints": {
         "avoidStairs": false,
@@ -562,12 +521,10 @@
         "avoidHazards": false
       },
       "weights": {
-        "time": 1.0,
-        "crowd": 0.25,
-        "risk": 0.25,
+        "time": 0.7,
         "distance": 0.1,
-        "access": 0.0,
-        "exitDistance": 0.0
+        "crowd": 0.1,
+        "risk": 0.1
       }
     },
     "seed": 1021
@@ -580,20 +537,18 @@
       "graphVersion": 23
     },
     "ground_truth": {
-      "startNode": "NM",
-      "endNode": "PL_U",
+      "startNode": "ST",
+      "endNode": "UP1",
       "constraints": {
         "avoidStairs": false,
         "requireElevator": false,
         "avoidHazards": false
       },
       "weights": {
-        "time": 1.0,
-        "crowd": 0.25,
-        "risk": 0.25,
+        "time": 0.7,
         "distance": 0.1,
-        "access": 0.0,
-        "exitDistance": 0.0
+        "crowd": 0.1,
+        "risk": 0.1
       }
     },
     "seed": 1022
@@ -601,25 +556,23 @@
   {
     "case_id": "TIME_04",
     "category": "TIME",
-    "query": "I need to transfer ASAP—what's the fastest route to the transfer corridor?",
+    "query": "I need to transfer ASAP—what's the fastest route to the mezzanine?",
     "snapshot": {
       "graphVersion": 24
     },
     "ground_truth": {
-      "startNode": "PL_D",
-      "endNode": "XFER",
+      "startNode": "DP1",
+      "endNode": "NM4",
       "constraints": {
         "avoidStairs": false,
         "requireElevator": false,
         "avoidHazards": false
       },
       "weights": {
-        "time": 1.0,
-        "crowd": 0.25,
-        "risk": 0.25,
+        "time": 0.7,
         "distance": 0.1,
-        "access": 0.0,
-        "exitDistance": 0.0
+        "crowd": 0.1,
+        "risk": 0.1
       }
     },
     "seed": 1023
@@ -632,7 +585,7 @@
       "graphVersion": 25
     },
     "ground_truth": {
-      "startNode": "PL_D",
+      "startNode": "UP10",
       "endNode": "EX4",
       "constraints": {
         "avoidStairs": false,
@@ -640,12 +593,10 @@
         "avoidHazards": false
       },
       "weights": {
-        "time": 1.0,
-        "crowd": 0.25,
-        "risk": 0.25,
+        "time": 0.7,
         "distance": 0.1,
-        "access": 0.0,
-        "exitDistance": 0.0
+        "crowd": 0.1,
+        "risk": 0.1
       }
     },
     "seed": 1024
@@ -653,12 +604,12 @@
   {
     "case_id": "TIME_06",
     "category": "TIME",
-    "query": "Quickest path to Exit 3—I'm in a hurry.",
+    "query": "Quickest path to Exit 3—I'm in a hurry, safety is important as well.",
     "snapshot": {
       "graphVersion": 26
     },
     "ground_truth": {
-      "startNode": "NM",
+      "startNode": "DP1",
       "endNode": "EX3",
       "constraints": {
         "avoidStairs": false,
@@ -666,12 +617,10 @@
         "avoidHazards": false
       },
       "weights": {
-        "time": 1.0,
-        "crowd": 0.25,
-        "risk": 0.25,
+        "time": 0.5,
         "distance": 0.1,
-        "access": 0.0,
-        "exitDistance": 0.0
+        "crowd": 0.1,
+        "risk": 0.3
       }
     },
     "seed": 1025
@@ -679,25 +628,23 @@
   {
     "case_id": "TIME_07",
     "category": "TIME",
-    "query": "Fastest route from the mezzanine to the uptown platform, please.",
+    "query": "Fastest route from the mezzanine to the uptown platform with least crowds.",
     "snapshot": {
       "graphVersion": 27
     },
     "ground_truth": {
-      "startNode": "MZ",
-      "endNode": "PL_U",
+      "startNode": "NM1",
+      "endNode": "UP9",
       "constraints": {
         "avoidStairs": false,
         "requireElevator": false,
         "avoidHazards": false
       },
       "weights": {
-        "time": 1.0,
-        "crowd": 0.25,
-        "risk": 0.25,
+        "time": 0.5,
         "distance": 0.1,
-        "access": 0.0,
-        "exitDistance": 0.0
+        "crowd": 0.3,
+        "risk": 0.1
       }
     },
     "seed": 1026
@@ -705,12 +652,12 @@
   {
     "case_id": "TIME_08",
     "category": "TIME",
-    "query": "What's the fastest route to Exit 2 from the entrance area?",
+    "query": "What's the fastest route to Exit 2 and less walking distance?",
     "snapshot": {
       "graphVersion": 28
     },
     "ground_truth": {
-      "startNode": "NM",
+      "startNode": "SM1",
       "endNode": "EX2",
       "constraints": {
         "avoidStairs": false,
@@ -718,12 +665,10 @@
         "avoidHazards": false
       },
       "weights": {
-        "time": 1.0,
-        "crowd": 0.25,
-        "risk": 0.25,
-        "distance": 0.1,
-        "access": 0.0,
-        "exitDistance": 0.0
+        "time": 0.5,
+        "distance": 0.3,
+        "crowd": 0.1,
+        "risk": 0.1
       }
     },
     "seed": 1027
@@ -731,25 +676,23 @@
   {
     "case_id": "TIME_09",
     "category": "TIME",
-    "query": "I have 2 minutes—fastest way to the transfer corridor?",
+    "query": "fastest way to the uptown platform and avoid crowds?",
     "snapshot": {
       "graphVersion": 29
     },
     "ground_truth": {
-      "startNode": "NM",
-      "endNode": "XFER",
+      "startNode": "SM3",
+      "endNode": "UP1",
       "constraints": {
         "avoidStairs": false,
         "requireElevator": false,
         "avoidHazards": false
       },
       "weights": {
-        "time": 1.0,
-        "crowd": 0.25,
-        "risk": 0.25,
+        "time": 0.5,
         "distance": 0.1,
-        "access": 0.0,
-        "exitDistance": 0.0
+        "crowd": 0.3,
+        "risk": 0.1
       }
     },
     "seed": 1028
@@ -757,12 +700,12 @@
   {
     "case_id": "TIME_10",
     "category": "TIME",
-    "query": "What's the fastest way from the uptown platform to Exit 1?",
+    "query": "What's the fastest way to Exit 1 safely?",
     "snapshot": {
       "graphVersion": 30
     },
     "ground_truth": {
-      "startNode": "PL_U",
+      "startNode": "UP10",
       "endNode": "EX1",
       "constraints": {
         "avoidStairs": false,
@@ -770,12 +713,10 @@
         "avoidHazards": false
       },
       "weights": {
-        "time": 1.0,
-        "crowd": 0.25,
-        "risk": 0.25,
+        "time": 0.5,
         "distance": 0.1,
-        "access": 0.0,
-        "exitDistance": 0.0
+        "crowd": 0.1,
+        "risk": 0.3
       }
     },
     "seed": 1029
@@ -788,7 +729,7 @@
       "graphVersion": 31
     },
     "ground_truth": {
-      "startNode": "NM",
+      "startNode": "DS3",
       "endNode": "EX2",
       "constraints": {
         "avoidStairs": false,
@@ -796,12 +737,10 @@
         "avoidHazards": false
       },
       "weights": {
-        "distance": 1.0,
-        "time": 0.25,
+        "time": 0.1,
+        "distance": 0.7,
         "crowd": 0.1,
-        "risk": 0.2,
-        "access": 0.0,
-        "exitDistance": 0.0
+        "risk": 0.1
       }
     },
     "seed": 1030
@@ -814,20 +753,18 @@
       "graphVersion": 32
     },
     "ground_truth": {
-      "startNode": "MZ",
-      "endNode": "PL_D",
+      "startNode": "NM1",
+      "endNode": "DP1",
       "constraints": {
         "avoidStairs": false,
         "requireElevator": false,
         "avoidHazards": false
       },
       "weights": {
-        "distance": 1.0,
-        "time": 0.25,
+        "time": 0.1,
+        "distance": 0.7,
         "crowd": 0.1,
-        "risk": 0.2,
-        "access": 0.0,
-        "exitDistance": 0.0
+        "risk": 0.1
       }
     },
     "seed": 1031
@@ -840,20 +777,18 @@
       "graphVersion": 33
     },
     "ground_truth": {
-      "startNode": "PL_U",
-      "endNode": "XFER",
+      "startNode": "NT",
+      "endNode": "SM1",
       "constraints": {
         "avoidStairs": false,
         "requireElevator": false,
         "avoidHazards": false
       },
       "weights": {
-        "distance": 1.0,
-        "time": 0.25,
+        "time": 0.1,
+        "distance": 0.7,
         "crowd": 0.1,
-        "risk": 0.2,
-        "access": 0.0,
-        "exitDistance": 0.0
+        "risk": 0.1
       }
     },
     "seed": 1032
@@ -866,7 +801,7 @@
       "graphVersion": 34
     },
     "ground_truth": {
-      "startNode": "PL_U",
+      "startNode": "UP1",
       "endNode": "EX3",
       "constraints": {
         "avoidStairs": false,
@@ -874,12 +809,10 @@
         "avoidHazards": false
       },
       "weights": {
-        "distance": 1.0,
-        "time": 0.25,
+        "time": 0.1,
+        "distance": 0.7,
         "crowd": 0.1,
-        "risk": 0.2,
-        "access": 0.0,
-        "exitDistance": 0.0
+        "risk": 0.1
       }
     },
     "seed": 1033
@@ -892,20 +825,18 @@
       "graphVersion": 35
     },
     "ground_truth": {
-      "startNode": "PL_D",
-      "endNode": "MZ",
+      "startNode": "DP12",
+      "endNode": "NM4",
       "constraints": {
         "avoidStairs": false,
         "requireElevator": false,
         "avoidHazards": false
       },
       "weights": {
-        "distance": 1.0,
-        "time": 0.25,
+        "time": 0.1,
+        "distance": 0.7,
         "crowd": 0.1,
-        "risk": 0.2,
-        "access": 0.0,
-        "exitDistance": 0.0
+        "risk": 0.1
       }
     },
     "seed": 1034
@@ -913,7 +844,7 @@
   {
     "case_id": "DIST_06",
     "category": "DISTANCE",
-    "query": "Shortest route to Exit 1—I'm okay if it's crowded.",
+    "query": "Shortest route to Exit 1—I'm okay if it's crowded, but i have limited time.",
     "snapshot": {
       "graphVersion": 36
     },
@@ -926,12 +857,10 @@
         "avoidHazards": false
       },
       "weights": {
-        "distance": 1.0,
-        "time": 0.25,
+        "time": 0.3,
+        "distance": 0.5,
         "crowd": 0.1,
-        "risk": 0.2,
-        "access": 0.0,
-        "exitDistance": 0.0
+        "risk": 0.1
       }
     },
     "seed": 1035
@@ -939,7 +868,7 @@
   {
     "case_id": "DIST_07",
     "category": "DISTANCE",
-    "query": "Give me the shortest walking path to Exit 4 from the mezzanine.",
+    "query": "Give me the shortest walking path to Exit 4 from the mezzanine safely.",
     "snapshot": {
       "graphVersion": 37
     },
@@ -952,12 +881,10 @@
         "avoidHazards": false
       },
       "weights": {
-        "distance": 1.0,
-        "time": 0.25,
+        "time": 0.3,
+        "distance": 0.5,
         "crowd": 0.1,
-        "risk": 0.2,
-        "access": 0.0,
-        "exitDistance": 0.0
+        "risk": 0.3
       }
     },
     "seed": 1036
@@ -965,25 +892,23 @@
   {
     "case_id": "DIST_08",
     "category": "DISTANCE",
-    "query": "Most direct route to the uptown platform from the entrance area.",
+    "query": "Most direct route to the uptown platform quickly.",
     "snapshot": {
       "graphVersion": 38
     },
     "ground_truth": {
       "startNode": "NM",
-      "endNode": "PL_U",
+      "endNode": "UP7",
       "constraints": {
         "avoidStairs": false,
         "requireElevator": false,
         "avoidHazards": false
       },
       "weights": {
-        "distance": 1.0,
-        "time": 0.25,
+        "time": 0.3,
+        "distance": 0.5,
         "crowd": 0.1,
-        "risk": 0.2,
-        "access": 0.0,
-        "exitDistance": 0.0
+        "risk": 0.1
       }
     },
     "seed": 1037
@@ -991,25 +916,23 @@
   {
     "case_id": "DIST_09",
     "category": "DISTANCE",
-    "query": "Shortest route to the transfer corridor from the mezzanine, please.",
+    "query": "Shortest route to the mezzanine, with less people please.",
     "snapshot": {
       "graphVersion": 39
     },
     "ground_truth": {
-      "startNode": "MZ",
-      "endNode": "XFER",
+      "startNode": "ST",
+      "endNode": "NT",
       "constraints": {
         "avoidStairs": false,
         "requireElevator": false,
         "avoidHazards": false
       },
       "weights": {
-        "distance": 1.0,
-        "time": 0.25,
-        "crowd": 0.1,
-        "risk": 0.2,
-        "access": 0.0,
-        "exitDistance": 0.0
+        "time": 0.1,
+        "distance": 0.5,
+        "crowd": 0.3,
+        "risk": 0.1
       }
     },
     "seed": 1038
@@ -1017,12 +940,12 @@
   {
     "case_id": "DIST_10",
     "category": "DISTANCE",
-    "query": "What's the most direct path to Exit 2 from the uptown platform?",
+    "query": "What's the most direct path to Exit 2 from the uptown platform with less crowds?",
     "snapshot": {
       "graphVersion": 40
     },
     "ground_truth": {
-      "startNode": "PL_U",
+      "startNode": "UP2",
       "endNode": "EX2",
       "constraints": {
         "avoidStairs": false,
@@ -1030,12 +953,10 @@
         "avoidHazards": false
       },
       "weights": {
-        "distance": 1.0,
-        "time": 0.25,
-        "crowd": 0.1,
-        "risk": 0.2,
-        "access": 0.0,
-        "exitDistance": 0.0
+        "time": 0.1,
+        "distance": 0.5,
+        "crowd": 0.3,
+        "risk": 0.1
       }
     },
     "seed": 1039
@@ -1048,7 +969,7 @@
       "graphVersion": 41
     },
     "ground_truth": {
-      "startNode": "MZ",
+      "startNode": "ST",
       "endNode": "EX4",
       "constraints": {
         "avoidStairs": false,
@@ -1056,12 +977,10 @@
         "avoidHazards": true
       },
       "weights": {
-        "risk": 1.0,
-        "crowd": 0.5,
-        "time": 0.35,
-        "access": 0.1,
-        "distance": 0.0,
-        "exitDistance": 0.0
+        "time": 0.1,
+        "distance": 0.1,
+        "crowd": 0.1,
+        "risk": 0.7
       }
     },
     "seed": 1040
@@ -1082,12 +1001,10 @@
         "avoidHazards": true
       },
       "weights": {
-        "risk": 1.0,
-        "crowd": 0.5,
-        "time": 0.35,
-        "access": 0.1,
-        "distance": 0.0,
-        "exitDistance": 0.0
+        "time": 0.1,
+        "distance": 0.1,
+        "crowd": 0.1,
+        "risk": 0.7
       }
     },
     "seed": 1041
@@ -1095,12 +1012,12 @@
   {
     "case_id": "EMERGENCY_03",
     "category": "EMERGENCY",
-    "query": "I see smoke—how do I evacuate safely to Exit 1 and avoid crowded corridors?",
+    "query": "I see smoke—how do I evacuate safely to Exit 1 ?",
     "snapshot": {
       "graphVersion": 43
     },
     "ground_truth": {
-      "startNode": "PL_D",
+      "startNode": "DP2",
       "endNode": "EX1",
       "constraints": {
         "avoidStairs": false,
@@ -1108,12 +1025,10 @@
         "avoidHazards": true
       },
       "weights": {
-        "risk": 1.0,
-        "crowd": 0.5,
-        "time": 0.35,
-        "access": 0.1,
-        "distance": 0.0,
-        "exitDistance": 0.0
+        "time": 0.1,
+        "distance": 0.1,
+        "crowd": 0.1,
+        "risk": 0.7
       }
     },
     "seed": 1042
@@ -1126,20 +1041,18 @@
       "graphVersion": 44
     },
     "ground_truth": {
-      "startNode": "PL_U",
-      "endNode": "MZ",
+      "startNode": "UP10",
+      "endNode": "NT",
       "constraints": {
         "avoidStairs": false,
         "requireElevator": false,
         "avoidHazards": true
       },
       "weights": {
-        "risk": 1.0,
-        "crowd": 0.5,
-        "time": 0.35,
-        "access": 0.1,
-        "distance": 0.0,
-        "exitDistance": 0.0
+        "time": 0.1,
+        "distance": 0.1,
+        "crowd": 0.1,
+        "risk": 0.7
       }
     },
     "seed": 1043
@@ -1147,12 +1060,12 @@
   {
     "case_id": "EMERGENCY_05",
     "category": "EMERGENCY",
-    "query": "Fire drill—avoid the blocked corridor and guide me to Exit 3.",
+    "query": "Avoid hazard and guide me to Exit 3.",
     "snapshot": {
       "graphVersion": 45
     },
     "ground_truth": {
-      "startNode": "MZ",
+      "startNode": "DS3",
       "endNode": "EX3",
       "constraints": {
         "avoidStairs": false,
@@ -1160,12 +1073,10 @@
         "avoidHazards": true
       },
       "weights": {
-        "risk": 1.0,
-        "crowd": 0.5,
-        "time": 0.35,
-        "access": 0.1,
-        "distance": 0.0,
-        "exitDistance": 0.0
+        "time": 0.1,
+        "distance": 0.1,
+        "crowd": 0.1,
+        "risk": 0.7
       }
     },
     "seed": 1044
@@ -1173,7 +1084,7 @@
   {
     "case_id": "EMERGENCY_06",
     "category": "EMERGENCY",
-    "query": "There's a hazard near the turnstiles—what's the safest way out to Exit 4?",
+    "query": "There's a hazard. what's the safest way out to Exit 4 quickly?",
     "snapshot": {
       "graphVersion": 46
     },
@@ -1186,12 +1097,10 @@
         "avoidHazards": true
       },
       "weights": {
-        "risk": 1.0,
-        "crowd": 0.5,
-        "time": 0.35,
-        "access": 0.1,
-        "distance": 0.0,
-        "exitDistance": 0.0
+        "time": 0.3,
+        "distance": 0.1,
+        "crowd": 0.1,
+        "risk": 0.5
       }
     },
     "seed": 1045
@@ -1199,12 +1108,12 @@
   {
     "case_id": "EMERGENCY_07",
     "category": "EMERGENCY",
-    "query": "Evacuate me from the downtown platform to Exit 2—avoid smoke and heavy crowds.",
+    "query": "Evacuate me from the downtown platform to Exit 2—avoid heavy crowds.",
     "snapshot": {
       "graphVersion": 47
     },
     "ground_truth": {
-      "startNode": "PL_D",
+      "startNode": "DP2",
       "endNode": "EX2",
       "constraints": {
         "avoidStairs": false,
@@ -1212,12 +1121,10 @@
         "avoidHazards": true
       },
       "weights": {
-        "risk": 1.0,
-        "crowd": 0.5,
-        "time": 0.35,
-        "access": 0.1,
-        "distance": 0.0,
-        "exitDistance": 0.0
+        "time": 0.1,
+        "distance": 0.1,
+        "crowd": 0.3,
+        "risk": 0.5
       }
     },
     "seed": 1046
@@ -1225,7 +1132,7 @@
   {
     "case_id": "EMERGENCY_08",
     "category": "EMERGENCY",
-    "query": "Emergency closure reported—what's the safest route to the transfer corridor from here?",
+    "query": "Avoid emergency and get out of the station with least walk",
     "snapshot": {
       "graphVersion": 48
     },
@@ -1238,12 +1145,10 @@
         "avoidHazards": true
       },
       "weights": {
-        "risk": 1.0,
-        "crowd": 0.5,
-        "time": 0.35,
-        "access": 0.1,
-        "distance": 0.0,
-        "exitDistance": 0.0
+        "time": 0.1,
+        "distance": 0.3,
+        "crowd": 0.1,
+        "risk": 0.5
       }
     },
     "seed": 1047
@@ -1251,12 +1156,12 @@
   {
     "case_id": "EMERGENCY_09",
     "category": "EMERGENCY",
-    "query": "I need the safest exit route—are there any blocked paths to Exit 1?",
+    "query": "I need the safest exit route to Exit 1 using least time?",
     "snapshot": {
       "graphVersion": 49
     },
     "ground_truth": {
-      "startNode": "MZ",
+      "startNode": "ST",
       "endNode": "EX1",
       "constraints": {
         "avoidStairs": false,
@@ -1264,12 +1169,10 @@
         "avoidHazards": true
       },
       "weights": {
-        "risk": 1.0,
-        "crowd": 0.5,
-        "time": 0.35,
-        "access": 0.1,
-        "distance": 0.0,
-        "exitDistance": 0.0
+        "time": 0.3,
+        "distance": 0.1,
+        "crowd": 0.1,
+        "risk": 0.5
       }
     },
     "seed": 1048
@@ -1277,12 +1180,12 @@
   {
     "case_id": "EMERGENCY_10",
     "category": "EMERGENCY",
-    "query": "There's an emergency on the mezzanine—what's the safest path to Exit 2?",
+    "query": "There's an emergency on the mezzanine—what's the safest path to Exit 2 as soon as possible?",
     "snapshot": {
       "graphVersion": 50
     },
     "ground_truth": {
-      "startNode": "MZ",
+      "startNode": "DS3",
       "endNode": "EX2",
       "constraints": {
         "avoidStairs": false,
@@ -1290,284 +1193,13 @@
         "avoidHazards": true
       },
       "weights": {
-        "risk": 1.0,
-        "crowd": 0.5,
-        "time": 0.35,
-        "access": 0.1,
-        "distance": 0.0,
-        "exitDistance": 0.0
+        "time": 0.3,
+        "distance": 0.1,
+        "crowd": 0.1,
+        "risk": 0.5
       }
     },
     "seed": 1049
-  },
-  {
-    "case_id": "EXIT_01",
-    "category": "EXIT_CLOSE_TO_DESTINATION",
-    "query": "Which exit should I take to get closest to Union Square?",
-    "snapshot": {
-      "graphVersion": 51
-    },
-    "ground_truth": {
-      "startNode": "MZ",
-      "endNode": "EX1",
-      "constraints": {
-        "avoidStairs": false,
-        "requireElevator": false,
-        "avoidHazards": false
-      },
-      "weights": {
-        "exitDistance": 1.0,
-        "time": 0.4,
-        "crowd": 0.2,
-        "risk": 0.25,
-        "distance": 0.0,
-        "access": 0.0
-      },
-      "externalDestination": "Union Square"
-    },
-    "seed": 1050
-  },
-  {
-    "case_id": "EXIT_02",
-    "category": "EXIT_CLOSE_TO_DESTINATION",
-    "query": "I'm heading to the pharmacy across the street—what's the best exit for that?",
-    "snapshot": {
-      "graphVersion": 52
-    },
-    "ground_truth": {
-      "startNode": "NM",
-      "endNode": "EX4",
-      "constraints": {
-        "avoidStairs": false,
-        "requireElevator": false,
-        "avoidHazards": false
-      },
-      "weights": {
-        "exitDistance": 1.0,
-        "time": 0.4,
-        "crowd": 0.2,
-        "risk": 0.25,
-        "distance": 0.0,
-        "access": 0.0
-      },
-      "externalDestination": "Nearby pharmacy"
-    },
-    "seed": 1051
-  },
-  {
-    "case_id": "EXIT_03",
-    "category": "EXIT_CLOSE_TO_DESTINATION",
-    "query": "Which exit is closest to the bus stop outside?",
-    "snapshot": {
-      "graphVersion": 53
-    },
-    "ground_truth": {
-      "startNode": "MZ",
-      "endNode": "EX4",
-      "constraints": {
-        "avoidStairs": false,
-        "requireElevator": false,
-        "avoidHazards": false
-      },
-      "weights": {
-        "exitDistance": 1.0,
-        "time": 0.4,
-        "crowd": 0.2,
-        "risk": 0.25,
-        "distance": 0.0,
-        "access": 0.0
-      },
-      "externalDestination": "Bus stop"
-    },
-    "seed": 1052
-  },
-  {
-    "case_id": "EXIT_04",
-    "category": "EXIT_CLOSE_TO_DESTINATION",
-    "query": "I'm going to 14th Street and Broadway—what exit should I use?",
-    "snapshot": {
-      "graphVersion": 54
-    },
-    "ground_truth": {
-      "startNode": "PL_U",
-      "endNode": "EX3",
-      "constraints": {
-        "avoidStairs": false,
-        "requireElevator": false,
-        "avoidHazards": false
-      },
-      "weights": {
-        "exitDistance": 1.0,
-        "time": 0.4,
-        "crowd": 0.2,
-        "risk": 0.25,
-        "distance": 0.0,
-        "access": 0.0
-      },
-      "externalDestination": "14th St & Broadway"
-    },
-    "seed": 1053
-  },
-  {
-    "case_id": "EXIT_05",
-    "category": "EXIT_CLOSE_TO_DESTINATION",
-    "query": "Which exit puts me closest to the coffee shop outside?",
-    "snapshot": {
-      "graphVersion": 55
-    },
-    "ground_truth": {
-      "startNode": "NM",
-      "endNode": "EX2",
-      "constraints": {
-        "avoidStairs": false,
-        "requireElevator": false,
-        "avoidHazards": false
-      },
-      "weights": {
-        "exitDistance": 1.0,
-        "time": 0.4,
-        "crowd": 0.2,
-        "risk": 0.25,
-        "distance": 0.0,
-        "access": 0.0
-      },
-      "externalDestination": "Coffee shop"
-    },
-    "seed": 1054
-  },
-  {
-    "case_id": "EXIT_06",
-    "category": "EXIT_CLOSE_TO_DESTINATION",
-    "query": "I need to get to the museum nearby—what's the best exit?",
-    "snapshot": {
-      "graphVersion": 56
-    },
-    "ground_truth": {
-      "startNode": "MZ",
-      "endNode": "EX1",
-      "constraints": {
-        "avoidStairs": false,
-        "requireElevator": false,
-        "avoidHazards": false
-      },
-      "weights": {
-        "exitDistance": 1.0,
-        "time": 0.4,
-        "crowd": 0.2,
-        "risk": 0.25,
-        "distance": 0.0,
-        "access": 0.0
-      },
-      "externalDestination": "Museum"
-    },
-    "seed": 1055
-  },
-  {
-    "case_id": "EXIT_07",
-    "category": "EXIT_CLOSE_TO_DESTINATION",
-    "query": "It's raining—can you take me to the exit that's closest to my destination outside?",
-    "snapshot": {
-      "graphVersion": 57
-    },
-    "ground_truth": {
-      "startNode": "PL_D",
-      "endNode": "EX4",
-      "constraints": {
-        "avoidStairs": false,
-        "requireElevator": false,
-        "avoidHazards": false
-      },
-      "weights": {
-        "exitDistance": 1.0,
-        "time": 0.4,
-        "crowd": 0.2,
-        "risk": 0.25,
-        "distance": 0.0,
-        "access": 0.0
-      },
-      "externalDestination": "Destination outside (unspecified)"
-    },
-    "seed": 1056
-  },
-  {
-    "case_id": "EXIT_08",
-    "category": "EXIT_CLOSE_TO_DESTINATION",
-    "query": "Which exit should I take for the closest walk to the park?",
-    "snapshot": {
-      "graphVersion": 58
-    },
-    "ground_truth": {
-      "startNode": "NM",
-      "endNode": "EX3",
-      "constraints": {
-        "avoidStairs": false,
-        "requireElevator": false,
-        "avoidHazards": false
-      },
-      "weights": {
-        "exitDistance": 1.0,
-        "time": 0.4,
-        "crowd": 0.2,
-        "risk": 0.25,
-        "distance": 0.0,
-        "access": 0.0
-      },
-      "externalDestination": "Park"
-    },
-    "seed": 1057
-  },
-  {
-    "case_id": "EXIT_09",
-    "category": "EXIT_CLOSE_TO_DESTINATION",
-    "query": "What's the best exit to reach the cinema fastest overall?",
-    "snapshot": {
-      "graphVersion": 59
-    },
-    "ground_truth": {
-      "startNode": "MZ",
-      "endNode": "EX1",
-      "constraints": {
-        "avoidStairs": false,
-        "requireElevator": false,
-        "avoidHazards": false
-      },
-      "weights": {
-        "exitDistance": 1.0,
-        "time": 0.4,
-        "crowd": 0.2,
-        "risk": 0.25,
-        "distance": 0.0,
-        "access": 0.0
-      },
-      "externalDestination": "Cinema"
-    },
-    "seed": 1058
-  },
-  {
-    "case_id": "EXIT_10",
-    "category": "EXIT_CLOSE_TO_DESTINATION",
-    "query": "I'm meeting someone on Broadway—what exit gets me closest outside?",
-    "snapshot": {
-      "graphVersion": 60
-    },
-    "ground_truth": {
-      "startNode": "PL_U",
-      "endNode": "EX3",
-      "constraints": {
-        "avoidStairs": false,
-        "requireElevator": false,
-        "avoidHazards": false
-      },
-      "weights": {
-        "exitDistance": 1.0,
-        "time": 0.4,
-        "crowd": 0.2,
-        "risk": 0.25,
-        "distance": 0.0,
-        "access": 0.0
-      },
-      "externalDestination": "Broadway"
-    },
-    "seed": 1059
   }
 ]
+

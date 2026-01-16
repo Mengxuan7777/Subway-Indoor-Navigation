@@ -139,6 +139,23 @@ def compute_travel_time(edges: List[str], state: dict, length_map: dict) -> floa
     return t
 
 
+def compute_total_risk(edges: List[str], state: dict) -> float:
+    """Calculate total risk (sum of hazard levels) across all edges."""
+    risk = 0.0
+    for e in edges:
+        s = state.get("edges", {}).get(e, {})
+        risk += float(s.get("hazardLevel", 0.0))
+    return risk
+
+
+def compute_total_distance(edges: List[str], length_map: dict) -> float:
+    """Calculate total distance (sum of edge lengths) across all edges."""
+    distance = 0.0
+    for e in edges:
+        distance += float(length_map.get(e, 1.0))
+    return distance
+
+
 def build_length_map_from_data(root_dir: str) -> dict:
     path = os.path.join(root_dir, "data", "edges.json")
     if not os.path.exists(path):
@@ -159,7 +176,7 @@ def build_length_map_from_data(root_dir: str) -> dict:
     return out
 
 
-def compute_metrics(gt_nodes, llm_nodes, state_snapshot, length_map, gt_constraints=None, gt_weights=None, llm_constraints=None, llm_weights=None):
+def compute_metrics(gt_nodes, llm_nodes, state_snapshot, length_map, gt_constraints=None, gt_weights=None, llm_constraints=None, llm_weights=None, gt_category=None, llm_category=None):
     gt_edges = edges_from_nodes(gt_nodes)
     llm_edges = edges_from_nodes(llm_nodes)
     lev = levenshtein(gt_edges, llm_edges)
@@ -168,6 +185,10 @@ def compute_metrics(gt_nodes, llm_nodes, state_snapshot, length_map, gt_constrai
     gt_time = compute_travel_time(gt_edges, state_snapshot, length_map)
     llm_time = compute_travel_time(llm_edges, state_snapshot, length_map)
     hazards_in_llm = sum(1 for e in llm_edges if state_snapshot.get("edges", {}).get(e, {}).get("hazardLevel", 0) > 0.3)
+    gt_risk = compute_total_risk(gt_edges, state_snapshot)
+    llm_risk = compute_total_risk(llm_edges, state_snapshot)
+    gt_distance = compute_total_distance(gt_edges, length_map)
+    llm_distance = compute_total_distance(llm_edges, length_map)
 
     # keep comparisons lightweight: record raw params and simple diffs
     gt_constraints = gt_constraints or {}
@@ -189,7 +210,7 @@ def compute_metrics(gt_nodes, llm_nodes, state_snapshot, length_map, gt_constrai
         g = float(gt_weights.get(k, 0.0))
         l = float(llm_weights.get(k, 0.0))
         if g != l:
-            weights_diff[k] = l - g
+            weights_diff[k] = round(l - g, 10)  # Round to avoid floating point precision issues
 
     metrics = {
         "timestamp": datetime.datetime.utcnow().isoformat() + "Z",
@@ -204,9 +225,17 @@ def compute_metrics(gt_nodes, llm_nodes, state_snapshot, length_map, gt_constrai
         "gt_time": gt_time,
         "llm_time": llm_time,
         "time_diff": llm_time - gt_time,
+        "gt_risk": gt_risk,
+        "llm_risk": llm_risk,
+        "risk_diff": llm_risk - gt_risk,
+        "gt_distance": gt_distance,
+        "llm_distance": llm_distance,
+        "distance_diff": llm_distance - gt_distance,
         "hazardous_edges_in_llm": hazards_in_llm,
+        "gt_category": gt_category or "",
         "gt_constraints": gt_constraints,
         "gt_weights": gt_weights,
+        "llm_category": llm_category or "",
         "llm_constraints": llm_constraints,
         "llm_weights": llm_weights,
         "constraints_diff_keys": constraints_diff,
@@ -224,9 +253,17 @@ def print_metrics(metrics: dict):
     print(f"LCS (edges): {metrics.get('lcs_edges')}  LCS_frac: {metrics.get('lcs_fraction'):.3f}")
     print(f"Jaccard (edges): {metrics.get('jaccard_edges'):.3f}")
     print(f"GT time: {metrics.get('gt_time'):.3f}  LLM time: {metrics.get('llm_time'):.3f}  time diff: {metrics.get('time_diff'):.3f}")
+    print(f"GT risk: {metrics.get('gt_risk'):.3f}  LLM risk: {metrics.get('llm_risk'):.3f}  risk diff: {metrics.get('risk_diff'):.3f}")
+    print(f"GT distance: {metrics.get('gt_distance'):.3f}  LLM distance: {metrics.get('llm_distance'):.3f}  distance diff: {metrics.get('distance_diff'):.3f}")
     print(f"Hazardous edges in LLM route (>0.3): {metrics.get('hazardous_edges_in_llm')}")
+    print(f"GT category: {metrics.get('gt_category')}")
+    print(f"LLM category: {metrics.get('llm_category')}")
     if metrics.get("constraints_diff_keys"):
         print(f"Constraint differences: {metrics.get('constraints_diff_keys')}")
+    print(f"GT constraints: {metrics.get('gt_constraints')}")
+    print(f"LLM constraints: {metrics.get('llm_constraints')}")
+    print(f"GT weights: {metrics.get('gt_weights')}")
+    print(f"LLM weights: {metrics.get('llm_weights')}")
     if metrics.get("weights_diff"):
         print(f"Weight deltas (llm-gt): {metrics.get('weights_diff')}")
 
@@ -246,7 +283,7 @@ def main():
     p.add_argument("--user", default="")
     p.add_argument("--llm-parse", help="LLM parse endpoint that returns params JSON")
     p.add_argument("--root", default=".", help="Repo root for data/edges.json")
-    p.add_argument("--out", help="Output JSON file to append metrics")
+    p.add_argument("--out", default="tools/trial_results.json", help="Output JSON file to append metrics")
     args = p.parse_args()
 
     state_snapshot = None
@@ -358,29 +395,41 @@ def main():
     llm_params = {}
     llm_constraints = {}
     llm_weights = {}
+    print(f"User text for LLM: {user_text}")
     if args.llm_parse and user_text:
-        print("Querying LLM parse endpoint...")
+        print(f"Querying LLM parse endpoint: {args.llm_parse}")
         try:
             parsed = parse_user_with_llm(args.llm_parse, start, goal, user_text)
-            llm_params = parsed.get("params", parsed)
+            print(f"LLM parse response: {parsed}")
+            if not isinstance(parsed, dict):
+                print(f"WARNING: LLM parse response is not a dict, got type: {type(parsed)}")
+                llm_params = {}
+            else:
+                llm_params = parsed
         except Exception as e:
-            print("LLM parse failed:", e)
+            print(f"LLM parse failed with exception: {type(e).__name__}: {e}")
+            import traceback
+            traceback.print_exc()
             llm_params = {}
+    elif not args.llm_parse:
+        print("No --llm-parse endpoint specified, skipping LLM parsing")
+    elif not user_text:
+        print("No user text available for LLM parsing")
 
     print("Calling LLM-guided planner...")
     try:
-        llm_constraints = llm_params.get("constraints") if isinstance(llm_params, dict) else {}
-        llm_weights = llm_params.get("weights") if isinstance(llm_params, dict) else {}
-        # fall back to GT constraints/weights when LLM did not provide them
-        if not llm_constraints and scenario_entry:
-            llm_constraints = scenario_entry.get("ground_truth", {}).get("constraints", {})
-        if not llm_weights and scenario_entry:
-            llm_weights = scenario_entry.get("ground_truth", {}).get("weights", {})
+        llm_category = llm_params.get("category", "") if isinstance(llm_params, dict) else ""
+        llm_constraints = llm_params.get("constraints", {}) if isinstance(llm_params, dict) else {}
+        llm_weights = llm_params.get("weights", {}) if isinstance(llm_params, dict) else {}
         llm_resp = call_route(args.backend, start, goal, constraints=llm_constraints, weights=llm_weights)
         llm_nodes = route_nodes_from_response(llm_resp)
     except Exception as e:
         print("Error calling LLM planner endpoint:", e)
         llm_nodes = []
+
+    gt_category = ""
+    if scenario_entry:
+        gt_category = scenario_entry.get("ground_truth", {}).get("category", "") or scenario_entry.get("category", "")
 
     metrics = compute_metrics(
         gt_nodes,
@@ -391,6 +440,8 @@ def main():
         gt_weights=gt_weights,
         llm_constraints=llm_constraints,
         llm_weights=llm_weights,
+        gt_category=gt_category,
+        llm_category=llm_category,
     )
     # augment metrics with scenario and user info
     if args.scenario_id:
@@ -413,7 +464,7 @@ def main():
             existing = []
         existing.append(metrics)
         with open(out, "w", encoding="utf-8") as f:
-            json.dump(existing, f, indent=2)
+            json.dump(existing, f, indent=2, ensure_ascii=False)
         print(f"Wrote metrics to {out}")
 
 

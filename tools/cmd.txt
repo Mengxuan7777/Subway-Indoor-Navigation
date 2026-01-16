@@ -1,0 +1,10 @@
+python app.py
+python simulator.py
+python local_llm_server.py
+
+
+python run_trail.py --backend http://127.0.0.1:5000 --llm-parse http://127.0.0.1:5002/parse --user-from-scenarios scenarios.json --scenario-id TIME_01 --post-scenario
+python run_trail.py --backend http://127.0.0.1:5000 --llm-parse http://127.0.0.1:5002/parse --user-from-scenarios scenarios.json --scenario-id ADA_04 --post-scenario
+python run_trail.py --backend http://127.0.0.1:5000 --llm-parse http://127.0.0.1:5002/parse --user-from-scenarios scenarios.json --scenario-id ADA_01 --post-scenario
+
+python run_all_scenarios.py

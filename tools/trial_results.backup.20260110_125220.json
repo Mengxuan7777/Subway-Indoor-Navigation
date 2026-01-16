@@ -1,0 +1,505 @@
+[
+  {
+    "timestamp": "2026-01-10T17:46:23.943811Z",
+    "gt_nodes": [
+      "DS1",
+      "DP7",
+      "EL2",
+      "ELM2",
+      "NM4",
+      "NT",
+      "NM2",
+      "EX4"
+    ],
+    "llm_nodes": [
+      "DS1",
+      "DSM1",
+      "NT",
+      "NM2",
+      "EX4"
+    ],
+    "gt_edges_count": 7,
+    "llm_edges_count": 4,
+    "levenshtein_edges": 5,
+    "lcs_edges": 2,
+    "lcs_fraction": 0.2857142857142857,
+    "jaccard_edges": 0.2222222222222222,
+    "gt_time": 7.0,
+    "llm_time": 4.0,
+    "time_diff": -3.0,
+    "gt_risk": 0.0,
+    "llm_risk": 0.0,
+    "risk_diff": 0.0,
+    "gt_distance": 7.0,
+    "llm_distance": 4.0,
+    "distance_diff": -3.0,
+    "hazardous_edges_in_llm": 0,
+    "gt_category": "ADA",
+    "gt_constraints": {
+      "avoidStairs": true,
+      "requireElevator": true,
+      "avoidHazards": false
+    },
+    "gt_weights": {
+      "time": 0.1,
+      "distance": 0.2,
+      "crowd": 0.2,
+      "risk": 0.5
+    },
+    "llm_category": "",
+    "llm_constraints": {},
+    "llm_weights": {},
+    "constraints_diff_keys": [
+      "avoidHazards",
+      "avoidStairs",
+      "requireElevator"
+    ],
+    "weights_diff": {
+      "crowd": -0.2,
+      "distance": -0.2,
+      "risk": -0.5,
+      "time": -0.1
+    },
+    "scenario_id": "ADA_01",
+    "user_text": "I'm in a wheelchair. Can you guide me to Exit 4 using elevators only? No stairs."
+  },
+  {
+    "timestamp": "2026-01-10T17:46:26.957361Z",
+    "gt_nodes": [
+      "NM1",
+      "NT",
+      "NM4",
+      "ELM1",
+      "EL1",
+      "UP7",
+      "US2",
+      "UP8",
+      "UP9",
+      "UP10"
+    ],
+    "llm_nodes": [
+      "NM1",
+      "NT",
+      "NM4",
+      "UPM2",
+      "US2",
+      "UP8",
+      "UP9",
+      "UP10"
+    ],
+    "gt_edges_count": 9,
+    "llm_edges_count": 7,
+    "levenshtein_edges": 4,
+    "lcs_edges": 5,
+    "lcs_fraction": 0.5555555555555556,
+    "jaccard_edges": 0.45454545454545453,
+    "gt_time": 9.0,
+    "llm_time": 7.0,
+    "time_diff": -2.0,
+    "gt_risk": 0.0,
+    "llm_risk": 0.0,
+    "risk_diff": 0.0,
+    "gt_distance": 9.0,
+    "llm_distance": 7.0,
+    "distance_diff": -2.0,
+    "hazardous_edges_in_llm": 0,
+    "gt_category": "ADA",
+    "gt_constraints": {
+      "avoidStairs": true,
+      "requireElevator": true,
+      "avoidHazards": false
+    },
+    "gt_weights": {
+      "time": 0.1,
+      "distance": 0.2,
+      "crowd": 0.2,
+      "risk": 0.5
+    },
+    "llm_category": "",
+    "llm_constraints": {},
+    "llm_weights": {},
+    "constraints_diff_keys": [
+      "avoidHazards",
+      "avoidStairs",
+      "requireElevator"
+    ],
+    "weights_diff": {
+      "crowd": -0.2,
+      "distance": -0.2,
+      "risk": -0.5,
+      "time": -0.1
+    },
+    "scenario_id": "ADA_02",
+    "user_text": "I can't take stairs. What's the accessible route to the uptown platform?"
+  },
+  {
+    "timestamp": "2026-01-10T17:46:29.647717Z",
+    "gt_nodes": [
+      "DS3",
+      "DP15",
+      "DP14",
+      "DP13",
+      "DP12",
+      "DP11",
+      "DP10",
+      "DS2",
+      "DP9",
+      "EL2",
+      "ELM2",
+      "NM4",
+      "NT",
+      "NM2",
+      "EX2"
+    ],
+    "llm_nodes": [
+      "DS3",
+      "DP15",
+      "DP14",
+      "DP13",
+      "DP12",
+      "DP11",
+      "DP10",
+      "DS2",
+      "DSM2",
+      "NM4",
+      "NT",
+      "NM2",
+      "EX2"
+    ],
+    "gt_edges_count": 14,
+    "llm_edges_count": 12,
+    "levenshtein_edges": 4,
+    "lcs_edges": 10,
+    "lcs_fraction": 0.7142857142857143,
+    "jaccard_edges": 0.625,
+    "gt_time": 14.0,
+    "llm_time": 12.0,
+    "time_diff": -2.0,
+    "gt_risk": 0.0,
+    "llm_risk": 0.0,
+    "risk_diff": 0.0,
+    "gt_distance": 14.0,
+    "llm_distance": 12.0,
+    "distance_diff": -2.0,
+    "hazardous_edges_in_llm": 0,
+    "gt_category": "ADA",
+    "gt_constraints": {
+      "avoidStairs": true,
+      "requireElevator": true,
+      "avoidHazards": false
+    },
+    "gt_weights": {
+      "time": 0.1,
+      "distance": 0.2,
+      "crowd": 0.2,
+      "risk": 0.5
+    },
+    "llm_category": "",
+    "llm_constraints": {},
+    "llm_weights": {},
+    "constraints_diff_keys": [
+      "avoidHazards",
+      "avoidStairs",
+      "requireElevator"
+    ],
+    "weights_diff": {
+      "crowd": -0.2,
+      "distance": -0.2,
+      "risk": -0.5,
+      "time": -0.1
+    },
+    "scenario_id": "ADA_03",
+    "user_text": "I'm pushing a stroller—please avoid stairs and take me to Exit 2 via elevators."
+  },
+  {
+    "timestamp": "2026-01-10T17:46:32.344934Z",
+    "gt_nodes": [
+      "EX3",
+      "NM1",
+      "NT",
+      "NM4",
+      "ELM2",
+      "EL2",
+      "DP7",
+      "DS1",
+      "DP6",
+      "DP5",
+      "DP4"
+    ],
+    "llm_nodes": [
+      "EX3",
+      "NM1",
+      "NT",
+      "DSM1",
+      "DS1",
+      "DP6",
+      "DP5",
+      "DP4"
+    ],
+    "gt_edges_count": 10,
+    "llm_edges_count": 7,
+    "levenshtein_edges": 5,
+    "lcs_edges": 5,
+    "lcs_fraction": 0.5,
+    "jaccard_edges": 0.4166666666666667,
+    "gt_time": 10.0,
+    "llm_time": 7.0,
+    "time_diff": -3.0,
+    "gt_risk": 0.0,
+    "llm_risk": 0.0,
+    "risk_diff": 0.0,
+    "gt_distance": 10.0,
+    "llm_distance": 7.0,
+    "distance_diff": -3.0,
+    "hazardous_edges_in_llm": 0,
+    "gt_category": "ADA",
+    "gt_constraints": {
+      "avoidStairs": true,
+      "requireElevator": true,
+      "avoidHazards": false
+    },
+    "gt_weights": {
+      "time": 0.3,
+      "distance": 0.1,
+      "crowd": 0.1,
+      "risk": 0.5
+    },
+    "llm_category": "",
+    "llm_constraints": {},
+    "llm_weights": {},
+    "constraints_diff_keys": [
+      "avoidHazards",
+      "avoidStairs",
+      "requireElevator"
+    ],
+    "weights_diff": {
+      "crowd": -0.1,
+      "distance": -0.1,
+      "risk": -0.5,
+      "time": -0.3
+    },
+    "scenario_id": "ADA_04",
+    "user_text": "I have heavy luggage—no stairs please. What's the accessible way to the downtown platform ASAP?"
+  },
+  {
+    "timestamp": "2026-01-10T17:46:35.004721Z",
+    "gt_nodes": [
+      "UP12",
+      "UP11",
+      "UP10",
+      "UP9",
+      "UP8",
+      "US2",
+      "UP7",
+      "EL1",
+      "ELM1",
+      "NM4",
+      "NT",
+      "NM1",
+      "EX1"
+    ],
+    "llm_nodes": [
+      "UP12",
+      "UP11",
+      "UP10",
+      "UP9",
+      "UP8",
+      "US2",
+      "UPM2",
+      "NM4",
+      "NT",
+      "NM1",
+      "EX1"
+    ],
+    "gt_edges_count": 12,
+    "llm_edges_count": 10,
+    "levenshtein_edges": 4,
+    "lcs_edges": 8,
+    "lcs_fraction": 0.6666666666666666,
+    "jaccard_edges": 0.5714285714285714,
+    "gt_time": 12.0,
+    "llm_time": 10.0,
+    "time_diff": -2.0,
+    "gt_risk": 0.0,
+    "llm_risk": 0.0,
+    "risk_diff": 0.0,
+    "gt_distance": 12.0,
+    "llm_distance": 10.0,
+    "distance_diff": -2.0,
+    "hazardous_edges_in_llm": 0,
+    "gt_category": "ADA",
+    "gt_constraints": {
+      "avoidStairs": true,
+      "requireElevator": true,
+      "avoidHazards": false
+    },
+    "gt_weights": {
+      "time": 0.1,
+      "distance": 0.2,
+      "crowd": 0.2,
+      "risk": 0.5
+    },
+    "llm_category": "",
+    "llm_constraints": {},
+    "llm_weights": {},
+    "constraints_diff_keys": [
+      "avoidHazards",
+      "avoidStairs",
+      "requireElevator"
+    ],
+    "weights_diff": {
+      "crowd": -0.2,
+      "distance": -0.2,
+      "risk": -0.5,
+      "time": -0.1
+    },
+    "scenario_id": "ADA_05",
+    "user_text": "Is there an elevator-only route to Exit 1? I can't do stairs at all."
+  },
+  {
+    "timestamp": "2026-01-10T17:46:37.690033Z",
+    "gt_nodes": [
+      "DP11",
+      "DP10",
+      "DS2",
+      "DP9",
+      "EL2",
+      "ELM2",
+      "NM4",
+      "NT",
+      "NM1",
+      "EX3"
+    ],
+    "llm_nodes": [
+      "DP11",
+      "DP10",
+      "DS2",
+      "DSM2",
+      "NM4",
+      "NT",
+      "NM1",
+      "EX3"
+    ],
+    "gt_edges_count": 9,
+    "llm_edges_count": 7,
+    "levenshtein_edges": 4,
+    "lcs_edges": 5,
+    "lcs_fraction": 0.5555555555555556,
+    "jaccard_edges": 0.45454545454545453,
+    "gt_time": 9.0,
+    "llm_time": 7.0,
+    "time_diff": -2.0,
+    "gt_risk": 0.0,
+    "llm_risk": 0.0,
+    "risk_diff": 0.0,
+    "gt_distance": 9.0,
+    "llm_distance": 7.0,
+    "distance_diff": -2.0,
+    "hazardous_edges_in_llm": 0,
+    "gt_category": "ADA",
+    "gt_constraints": {
+      "avoidStairs": true,
+      "requireElevator": true,
+      "avoidHazards": false
+    },
+    "gt_weights": {
+      "time": 0.1,
+      "distance": 0.1,
+      "crowd": 0.3,
+      "risk": 0.5
+    },
+    "llm_category": "",
+    "llm_constraints": {},
+    "llm_weights": {},
+    "constraints_diff_keys": [
+      "avoidHazards",
+      "avoidStairs",
+      "requireElevator"
+    ],
+    "weights_diff": {
+      "crowd": -0.3,
+      "distance": -0.1,
+      "risk": -0.5,
+      "time": -0.1
+    },
+    "scenario_id": "ADA_06",
+    "user_text": "I need the most accessible path—avoid stairs and narrow corridors—to Exit 3."
+  },
+  {
+    "timestamp": "2026-01-10T17:46:40.476611Z",
+    "gt_nodes": [
+      "UP1",
+      "UP2",
+      "UP3",
+      "UP4",
+      "UP5",
+      "US1",
+      "UP6",
+      "EL1",
+      "ELM1",
+      "NM4",
+      "ELM2",
+      "EL2",
+      "DP7",
+      "DS1",
+      "DP6"
+    ],
+    "llm_nodes": [
+      "UP1",
+      "UP2",
+      "UP3",
+      "UP4",
+      "UP5",
+      "US1",
+      "USM1",
+      "NT",
+      "DSM1",
+      "DS1",
+      "DP6"
+    ],
+    "gt_edges_count": 14,
+    "llm_edges_count": 10,
+    "levenshtein_edges": 8,
+    "lcs_edges": 6,
+    "lcs_fraction": 0.42857142857142855,
+    "jaccard_edges": 0.3333333333333333,
+    "gt_time": 14.0,
+    "llm_time": 10.0,
+    "time_diff": -4.0,
+    "gt_risk": 0.0,
+    "llm_risk": 0.0,
+    "risk_diff": 0.0,
+    "gt_distance": 14.0,
+    "llm_distance": 10.0,
+    "distance_diff": -4.0,
+    "hazardous_edges_in_llm": 0,
+    "gt_category": "ADA",
+    "gt_constraints": {
+      "avoidStairs": true,
+      "requireElevator": true,
+      "avoidHazards": false
+    },
+    "gt_weights": {
+      "time": 0.1,
+      "distance": 0.2,
+      "crowd": 0.2,
+      "risk": 0.5
+    },
+    "llm_category": "",
+    "llm_constraints": {},
+    "llm_weights": {},
+    "constraints_diff_keys": [
+      "avoidHazards",
+      "avoidStairs",
+      "requireElevator"
+    ],
+    "weights_diff": {
+      "crowd": -0.2,
+      "distance": -0.2,
+      "risk": -0.5,
+      "time": -0.1
+    },
+    "scenario_id": "ADA_07",
+    "user_text": "Please route me to the downtown platform using elevators only."
+  }
+]

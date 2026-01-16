@@ -91,6 +91,6 @@ export class ChatController {
       if (e.key === "Enter") this.sendBtn.click();
     });
 
-    this.addMsg("Enter current node + destination, choose criteria, then Send.", "bot");
+    this.addMsg("Ask me the route to your destination with certain criteria.", "bot");
   }
 }

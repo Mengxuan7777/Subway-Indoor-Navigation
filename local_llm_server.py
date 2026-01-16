@@ -200,12 +200,14 @@ def parse(req: ParseReq):
         '  "weights": {"time": number, "distance": number, "crowd": number, "risk": number}\\n'
         "}\\n\\n"
         "Rules:\\n"
-        "- All weights must be >= 0.\\n"
-        "- If wheelchair/accessible/no stairs is mentioned: avoidStairs=true and requireElevator=true.\\n"
-        "- If emergency/smoke/fire/hazard is mentioned: avoidHazards=true and risk should be the highest weight.\\n"
-        "- If user says avoid crowds/least crowded: crowd should be the highest weight.\\n"
-        "- If user says shortest/least walking: distance should be the highest weight.\\n"
-        "- Otherwise: hazard should be the highest weight.\\n"
+        "- All weights must be between 0.0-1.0 and should sum to 1.0.\\n"
+        "- Weights represent importance: higher values mean the planner prioritizes minimizing that factor.\\n"
+        "- If wheelchair/accessible/no stairs is mentioned: avoidStairs=true, requireElevator=true, and set risk the highest weight.\\n"
+        "- If emergency/smoke/fire/hazard is mentioned: avoidHazards=true and set risk the highest, others lower.\\n"
+        "- If user says avoid crowds/least crowded:set crowd the highest, others lower.\\n"
+        "- If user says fastest/quickest: set time the highest, others lower.\\n"
+        "- If user says shortest/least walking: set distance the highest, others lower.\\n"
+        "- If user mentioned two or more requirement above, give hirearchy to the weights.\\n"
         '- Set `category` to exactly one of: "ADA", "TIME", "DISTANCE", "EMERGENCY" based on the primary user intent.\\n'
     )
 
@@ -219,6 +221,8 @@ def parse(req: ParseReq):
         else:
             raise HTTPException(400, "Unknown provider")
 
+        print(f"LLM raw response: {text}")
+        
         # Parse JSON from LLM response
         # Extract JSON if wrapped in markdown code blocks
         text = text.strip()
@@ -230,14 +234,24 @@ def parse(req: ParseReq):
             text = text[:-3]
         text = text.strip()
 
+        print(f"LLM cleaned response: {text}")
+        
         parsed = json.loads(text)
+        category = parsed.get("category", "")
         constraints = parsed.get("constraints", {})
         weights = parsed.get("weights", {})
 
-        return {"constraints": constraints, "weights": weights}
+        print(f"Parsed category: {category}, constraints: {constraints}, weights: {weights}")
+        
+        return {"category": category, "constraints": constraints, "weights": weights}
 
     except json.JSONDecodeError as e:
         raise HTTPException(400, f"LLM returned invalid JSON: {str(e)}. Response: {text[:200]}")
     except Exception as e:
         raise HTTPException(500, str(e))
+
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=5001)
 

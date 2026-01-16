@@ -186,9 +186,13 @@ def arc_cost(arc: Arc, weights: Dict[str, float]) -> float:
 
 def heuristic(node_id: str, goal_id: str, nodes: Dict[str, Dict[str, Any]], weights: Dict[str, float]) -> float:
     """
-    Admissible heuristic:
-      h = w_time * straight_line_time_lower_bound
-    If w_time==0, fall back to distance lower bound with w_distance, else 0.
+    Admissible heuristic that combines multiple weights:
+      h = w_time * (straight_line_distance / max_speed) + w_distance * straight_line_distance
+    
+    This remains admissible because:
+    - Straight-line distance is the shortest possible path
+    - V_MAX_MPS is the maximum possible speed (optimistic)
+    - Risk and crowd cannot be predicted from position alone, so we assume 0 (optimistic but valid)
     """
     if node_id not in nodes or goal_id not in nodes:
         return 0.0
@@ -196,14 +200,13 @@ def heuristic(node_id: str, goal_id: str, nodes: Dict[str, Dict[str, Any]], weig
     dist = euclid_3d(nodes[node_id]["pos"], nodes[goal_id]["pos"])
 
     w_time = float(weights.get("time", 0.0))
-    if w_time > 0.0:
-        return w_time * (dist / V_MAX_MPS)
-
     w_dist = float(weights.get("distance", 0.0))
-    if w_dist > 0.0:
-        return w_dist * dist
-
-    return 0.0
+    
+    # Combine time and distance components
+    # (crowd and risk weights are not used here since we can't predict them from geometry alone)
+    h = w_time * (dist / V_MAX_MPS) + w_dist * dist
+    
+    return float(h)
 
 
 # -----------------------------
@@ -350,7 +353,7 @@ def api_state_update():
 
 
 
-@app.post("/api/route")
+@app.route("/api/route", methods=['POST'])
 def api_route():
     """
     Body:
@@ -399,3 +402,7 @@ def api_route():
             "graphVersion": LIVE_STATE["graphVersion"],
             "error": str(e)
         }), 404
+
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000, debug=True)

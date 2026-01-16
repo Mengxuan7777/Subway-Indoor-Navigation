@@ -32,11 +32,11 @@ def build_payload(edges, version):
         crowd = round(random.random(), 3)
         hazard = 0.0
         # small chance of hazard; higher crowd increases hazard chance slightly
-        if random.random() < 0.03 + 0.2 * crowd:
+        if random.random() < 0.03 + 0.1 * crowd:
             hazard = round(random.uniform(0.5, 1.0), 3)
 
         speed_factor = round(1.0 + 0.5 * crowd + (0.5 if random.random() < 0.05 else 0.0), 3)
-        status = "blocked" if hazard > 0.7 else "open"
+        status = "blocked" if hazard > 0.9 else "open"
 
         st = {"status": status, "crowdLevel": crowd, "speedFactor": speed_factor, "hazardLevel": hazard}
         out["edges"][id1] = st
